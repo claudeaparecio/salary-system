@@ -1,7 +1,7 @@
 {
-  "name": "mern-boilerplate",
-  "version": "0.6.0",
-  "description": "A full MERN stack boilerplate",
+  "name": "salary-system",
+  "version": "0.0.1",
+  "description": "Internal Salary System",
   "main": "server/index.js",
   "scripts": {
     "build": "./scripts/build-prd.sh",
@@ -19,16 +19,16 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/djizco/mern-boilerplate.git"
+    "url": "git+https://github.com/claudeaparecio/salary-system.git"
   },
   "author": {
-    "name": "Federico Rojas",
-    "email": "djizco@yahoo.com",
-    "url": "https://github.com/djizco"
+    "name": "Claude Jacob Aparecio",
+    "email": "jacobaparecio@gmail.com",
+    "url": "https://github.com/claudeaparecio/"
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/djizco/mern-boilerplate/issues"
+    "url": "https://github.com/claudeaparecio/salary-system/issues"
   },
   "keywords": [
     "react",
@@ -42,7 +42,7 @@
     "eslint",
     "jest"
   ],
-  "homepage": "https://github.com/djizco/mern-boilerplate#readme",
+  "homepage": "https://github.com/claudeaparecio/salary-system",
   "engines": {
     "node": ">=12.0.0"
   },
