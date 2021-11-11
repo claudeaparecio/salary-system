@@ -19,7 +19,7 @@ import Help from 'react-bulma-companion/lib/Help';
 
 import useKeyPress from '_hooks/useKeyPress';
 import { postCheckUsername } from '_api/users';
-import { validateUsername, validatePassword } from '_utils/validation';
+import { validateUsername, validatePassword, validateEmail } from '_utils/validation';
 import { attemptRegister } from '_thunks/auth';
 
 export default function Register() {
@@ -27,10 +27,13 @@ export default function Register() {
 
   const [username, setUsername] = useState('');
   const [usernameMessage, setUsernameMessage] = useState('');
+  const [email, setEmail] = useState('');
+  const [emailMessage, setEmailMessage] = useState('');
   const [password, setPassword] = useState('');
   const [passwordMessage, setPasswordMessage] = useState('');
   const [usernameAvailable, setUsernameAvailable] = useState(false);
   const [passwordValid, setPasswordValid] = useState(false);
+  const [emailValid, setEmailValid] = useState(false);
 
   const checkPassword = (newUsername, newPassword) => {
     const { valid, message } = validatePassword(newUsername, newPassword);
@@ -38,6 +41,13 @@ export default function Register() {
     setPasswordValid(valid);
     setPasswordMessage(message);
   };
+
+  const checkEmail = (email) => {
+    const { valid, message } = validateEmail(email)
+
+    setEmailValid(valid)
+    setEmailMessage(message)
+  }
 
   const checkUsername = newUsername => {
     const { valid, message } = validateUsername(newUsername);
@@ -67,6 +77,11 @@ export default function Register() {
     updateUsername(e.target.value);
     checkUsername(e.target.value);
   };
+  
+  const handleEmailChange = e => {
+    setEmail(e.target.value);
+    checkEmail(e.target.value);
+  };
 
   const handlePasswordChange = e => {
     setPassword(e.target.value);
@@ -78,6 +93,7 @@ export default function Register() {
       const newUser = {
         username,
         password,
+        email,
       };
 
       dispatch(attemptRegister(newUser))
@@ -126,6 +142,36 @@ export default function Register() {
         {username && (
           <Help color={usernameAvailable ? 'success' : 'danger'}>
             {usernameMessage}
+          </Help>
+        )}
+      </Field>
+      <Field>
+        <Label htmlFor="email">
+          Email
+        </Label>
+        <Control iconsRight>
+          <Input
+            id="email"
+            placeholder="Email"
+            color={email ? (emailValid ? 'success' : 'danger') : undefined}
+            value={email}
+            onChange={handleEmailChange}
+          />
+          {email && (
+            <Icon
+              size="small"
+              align="right"
+              color={emailValid ? 'success' : 'danger'}
+            >
+              <FontAwesomeIcon
+                icon={emailValid ? faCheck : faExclamationTriangle}
+              />
+            </Icon>
+          )}
+        </Control>
+        {email && (
+          <Help color={emailValid ? 'success' : 'danger'}>
+            {emailMessage}
           </Help>
         )}
       </Field>
