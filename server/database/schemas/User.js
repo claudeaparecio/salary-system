@@ -11,6 +11,9 @@ const userSchema = new Schema({
   password: { type: String, required: true },
   profile_pic: { type: String },
   first_name: { type: String, maxlength: 20 },
+  email: { type: String, required: true },
+  hourly_rate: { type: String, required: true },
+  wallet_address: { type: String, required: true },
   last_name: { type: String, maxlength: 20 },
   bio: { type: String, maxlength: 240 },
   created_at: { type: Date, default: Date.now, immutable: true },
@@ -69,6 +72,4 @@ userSchema.methods.hidePassword = function() {
   return R.omit(['password', '_id'], this.toObject({ virtuals: true }));
 };
 
-const User = mongoose.model('User', userSchema);
-
-module.exports = User;
+module.exports = mongoose.model('User', userSchema);

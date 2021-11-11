@@ -2,12 +2,12 @@ const mongoose = require('mongoose');
 
 const { Schema } = mongoose;
 
-const sessionSchema = new Schema({
-  session: String,
-  session_id: String,
-  expire: Date,
+const SessionSchema = new Schema({
+  session: { type: String, },
+  session_id: { type: String, },
+  expire: { type: String, },
+}, {
+  timestamps: true
 });
 
-const Session = mongoose.model('Session', sessionSchema);
-
-module.exports = Session;
+module.exports = mongoose.model('Session', SessionSchema)

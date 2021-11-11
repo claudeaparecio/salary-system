@@ -1,10 +1,10 @@
 const express = require('express');
 const path = require('path');
 
-const auth         = require('./auth');
-const user         = require('./user');
-const users        = require('./users');
-const todos        = require('./todos');
+const auth = require('./auth');
+const user = require('./user');
+const users = require('./users');
+const todos = require('./todos');
 
 const router = express.Router();
 

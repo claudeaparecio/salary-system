@@ -1,9 +1,13 @@
 const Session = require('./Session');
 const User = require('./User');
-const Todo = require('./Todo');
+const Employee = require('./Employee');
+const Invoice = require('./Invoice');
+const Receipt = require('./Receipt');
 
 module.exports = {
   Session,
   User,
-  Todo,
+  Employee,
+  Invoice,
+  Receipt,
 };
