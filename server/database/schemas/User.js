@@ -12,12 +12,13 @@ const userSchema = new Schema({
   profile_pic: { type: String },
   first_name: { type: String, maxlength: 20 },
   email: { type: String, required: true },
-  hourly_rate: { type: String, required: true },
-  wallet_address: { type: String, required: true },
+  hourly_rate: { type: String },
+  wallet_address: { type: String },
   last_name: { type: String, maxlength: 20 },
-  bio: { type: String, maxlength: 240 },
   created_at: { type: Date, default: Date.now, immutable: true },
   updated_at: { type: Date },
+  profile_picture: { type: String },
+  role: { type: String, enum: ['user', 'admin'], default: 'user' }
 }, { versionKey: false });
 
 if (process.env.NODE_ENV !== 'test') {

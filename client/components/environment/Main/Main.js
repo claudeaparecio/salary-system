@@ -7,16 +7,27 @@ import R from 'ramda';
 
 import { attemptGetUser } from '_thunks/user';
 
+import {
+  Menu,
+  Columns,
+  Column,
+  Navbar,
+  Title,
+  Image,
+} from 'react-bulma-companion'
+
 import WelcomePage from '_pages/WelcomePage';
 import LoginPage from '_pages/LoginPage';
 import RegisterPage from '_pages/RegisterPage';
 import HomePage from '_pages/HomePage';
-import TodoPage from '_pages/TodoPage';
+import InvoicePage from '_pages/InvoicePage';
 import SettingsPage from '_pages/SettingsPage';
 import LostPage from '_pages/LostPage';
+import WalletPage from '_pages/WalletPage';
 
 import Navigation from '_organisms/Navigation';
 import Footer from '_organisms/Footer';
+
 
 export default function Main({ location }) {
   const dispatch = useDispatch();
@@ -38,20 +49,25 @@ export default function Main({ location }) {
 
   return !loading && (
     <div>
-      <ReactNotification />
+      <Columns>
       <Navigation pathname={location.pathname} />
+      <ReactNotification />
+      <Column>
       <div className="main">
         <Switch>
           <Route exact path="/" component={WelcomePage} />
           <Route path="/login" component={LoginPage} />
           <Route path="/register" component={RegisterPage} />
           <Route path="/home" component={HomePage} />
-          <Route path="/todo" component={TodoPage} />
+          <Route path="/invoice" component={InvoicePage} />
           <Route path="/settings" component={SettingsPage} />
+          <Route path="/wallet" component={WalletPage} />
           <Route path="*" component={LostPage} />
         </Switch>
       </div>
       <Footer />
+      </Column>
+      </Columns>
     </div>
   );
 }

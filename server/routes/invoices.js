@@ -14,24 +14,40 @@ const router = express.Router();
 module.exports = router;
 
 router.get('/', requireAuth, (req, res) => {
-    Invoice.find({
-        user: req.user.id
-    }, {
-        __v: 0,
-        user: 0
-    }, (err, invoices) => {
-        if (err) {
-            res.status(400).send({
-                message: 'Get invoices failed',
-                err
-            });
-        } else {
-            res.send({
-                message: 'Invoices retrieved successfully',
-                invoices
-            });
-        }
-    });
+    if (req.user.role === 'admin') {
+        Invoice.find({}, (err, invoices ) => {
+            if (err) {
+                res.status(400).send({
+                    message: 'Get invoices failed',
+                    err
+                });
+            } else {
+                res.send({
+                    message: 'Invoices retrieved successfully',
+                    invoices
+                });
+            }
+        })
+    } else {
+        Invoice.find({
+            user: req.user.id
+        }, {
+            __v: 0,
+            user: 0
+        }, (err, invoices) => {
+            if (err) {
+                res.status(400).send({
+                    message: 'Get invoices failed',
+                    err
+                });
+            } else {
+                res.send({
+                    message: 'Invoices retrieved successfully',
+                    invoices
+                });
+            }
+        });
+    }
 });
 
 router.get('/find', requireAuth, (req, res) => {
@@ -62,7 +78,7 @@ router.post('/', requireAuth, (req, res) => {
         reference_number: referenceNumber,
     });
 
-    newInvoice.save((err, savedInvoice) => {
+    newInvoice.save((err, invoice) => {
         if (err) {
             res.status(400).send({
                 message: 'Create invoice failed',
@@ -71,7 +87,7 @@ router.post('/', requireAuth, (req, res) => {
         } else {
             res.send({
                 message: 'Invoice created successfully',
-                todo: savedInvoice
+                invoice,
             });
         }
     });

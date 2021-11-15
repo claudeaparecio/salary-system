@@ -1,191 +1,204 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import R from 'ramda';
+import styled from 'styled-components';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faSync } from '@fortawesome/free-solid-svg-icons/faSync';
+import { faUpload } from '@fortawesome/free-solid-svg-icons/faUpload';
 
 import Box from 'react-bulma-companion/lib/Box';
 import Icon from 'react-bulma-companion/lib/Icon';
 import Title from 'react-bulma-companion/lib/Title';
 import Columns from 'react-bulma-companion/lib/Columns';
 import Column from 'react-bulma-companion/lib/Column';
-import Button from 'react-bulma-companion/lib/Button';
 import Image from 'react-bulma-companion/lib/Image';
 import Field from 'react-bulma-companion/lib/Field';
 import Control from 'react-bulma-companion/lib/Control';
-import Textarea from 'react-bulma-companion/lib/Textarea';
 import Label from 'react-bulma-companion/lib/Label';
-import Help from 'react-bulma-companion/lib/Help';
 import Input from 'react-bulma-companion/lib/Input';
+import File from 'react-bulma-companion/lib/File';
 
-import { validateName } from '_utils/validation';
-import { attemptGetUser, attemptUpdateUser } from '_thunks/user';
+import { attemptUpdateUser } from '_thunks/user';
+import * as Yup from 'yup'
+import { Formik } from 'formik'
+
+const SubmitButton = styled.button`
+  border: none;
+  background-color: #2c71f0;
+  color: #ffffff;
+  font-weight: 500;
+  font-size: 16px;
+  width: 100%;
+  border-radius: 8px;
+  padding: 10px 10px;
+  cursor: pointer;
+`;
+
+const GeneralProfileSchema = Yup.object().shape({
+  firstName: Yup.string().required('Required'),
+  lastName: Yup.string().required('Required'),
+  profilePic: Yup.object(),
+  walletAddress: Yup.string(),
+  email: Yup.string().email('Invalid Email'),
+})
 
 export default function GeneralProfile() {
   const dispatch = useDispatch();
   const { user } = useSelector(R.pick(['user']));
 
-  const [firstName, setFirstName] = useState(user.firstName || '');
-  const [lastName, setLastName] = useState(user.lastName || '');
-  const [bio, setBio] = useState(user.bio || '');
-  const [profilePic, setProfilePic] = useState(user.profilePic || '');
-  const [firstNameEdited, setFirstNameEdited] = useState(false);
-  const [lastNameEdited, setLastNameEdited] = useState(false);
-  const [bioEdited, setBioEdited] = useState(false);
-  const [profilePicEdited, setProfilePicEdited] = useState(false);
-
-  const resetState = () => {
-    setFirstName(user.firstName || '');
-    setLastName(user.lastName || '');
-    setBio(user.bio || '');
-    setProfilePic(user.profilePic || '');
-    setFirstNameEdited(false);
-    setLastNameEdited(false);
-    setBioEdited(false);
-    setProfilePicEdited(false);
-  };
-
-  useEffect(() => {
-    resetState();
-  }, [user.firstName, user.lastName, user.bio, user.profilePic]);
-
-  const updateFirstName = e => {
-    if (validateName(e.target.value)) {
-      setFirstName(e.target.value);
-      setFirstNameEdited(true);
-    }
-  };
-
-  const updateLastName = e => {
-    if (validateName(e.target.value)) {
-      setLastName(e.target.value);
-      setLastNameEdited(true);
-    }
-  };
-
-  const updateBio = e => {
-    setBio(e.target.value);
-    setBioEdited(true);
-  };
-
-  const updateProfilePic = e => {
-    setProfilePic(e.target.value);
-    setProfilePicEdited(true);
-  };
-
-  const refresh = () => dispatch(attemptGetUser())
-    .then(resetState)
-    .catch(R.identity);
-
-  const save = () => {
-    const updatedUser = {};
-
-    if (firstNameEdited) { updatedUser.first_name = firstName; }
-    if (lastNameEdited) { updatedUser.last_name = lastName; }
-    if (profilePicEdited) { updatedUser.profile_pic = profilePic; }
-    if (bioEdited) { updatedUser.bio = bio; }
-
-    if (!R.isEmpty(updatedUser)) {
-      dispatch(attemptUpdateUser(updatedUser))
-        .catch(R.identity);
-    }
-  };
-
-  const charactersRemaining = 240 - bio.length;
-  const edited = firstNameEdited || lastNameEdited || bioEdited || profilePicEdited;
-
   return (
-    <Box className="general-profile">
-      <Icon size="medium" className="is-pulled-right" onClick={refresh} onKeyPress={refresh}>
-        <FontAwesomeIcon icon={faSync} size="lg" />
-      </Icon>
-      <Title size="3">
-        General
-      </Title>
-      <hr className="separator" />
-      <Columns>
-        <Column size="4">
-          <Title size="3" className="has-text-centered">
-            {user.usernameCase}
+    <Formik
+      validateOnMount={false}
+      initialValues={{
+          firstName: user.firstName,
+          lastName: user.lastName,
+          profilePic: user.profilePic,
+          walletAddress: user.walletAddress,
+          email: user.email,
+          fileName: ''
+      }}
+      onSubmit={(values) => {
+        dispatch(attemptUpdateUser(values))
+      }}
+      validationSchema={GeneralProfileSchema}    
+    >
+      {formikProps => {
+        const {
+          touched,
+          handleChange,
+          handleBlur,
+          handleSubmit,
+          values,
+          setFieldValue,
+          errors,
+        } = formikProps;
+
+        console.log(errors, values)
+        const onFileChange = (event) => {
+          const file = event.target.files[0]
+          const reader = new FileReader()
+          
+          reader.onload = (e) => {
+            setFieldValue('profilePic', file)
+            setFieldValue('fileName', file.name)
+          }
+        }
+        return (
+          <Box className="general-profile"> 
+          <Title size="3">
+            General
           </Title>
-          <Image>
-            <Image.Content
-              className="profile-img"
-              src={profilePic || '/images/default-profile.png'}
-              alt="Profile"
-            />
-          </Image>
-          <Field>
-            <Label htmlFor="profile-pic-url">
-              Picture URL
-            </Label>
-            <Control>
-              <Input
-                id="profile-pic-url"
-                placeholder="Picture URL"
-                value={profilePic}
-                onChange={updateProfilePic}
-              />
-            </Control>
-          </Field>
-        </Column>
-        <Column size="8">
+          <hr className="separator" />
           <Columns>
-            <Column size="6">
+            <Column size="4">
+              <Title size="3" className="has-text-centered">
+                {user.usernameCase}
+              </Title>
+              <Image>
+                <Image.Content
+                  className="profile-img"
+                  src={values.profilePic || '/images/default-profile.png'}
+                  alt="Profile"
+                />
+              </Image>
               <Field>
-                <Label htmlFor="first-name" className="Label">
-                  First Name
-                </Label>
                 <Control>
-                  <Input
-                    id="first-name"
-                    placeholder="First Name"
-                    value={firstName}
-                    onChange={updateFirstName}
-                  />
+                  <File hasName>
+                    <File.Label>
+                      <File.Input
+                        value={values.profilePic}
+                        onChange={onFileChange}
+                        type="file"
+                        name="profilePic"
+                      />
+                      <File.CTA>
+                        <File.Icon>
+                          <FontAwesomeIcon icon={faUpload} />
+                        </File.Icon>
+                        <File.Text>Choose a file...</File.Text>
+                      </File.CTA>
+                      <File.Name>{values.fileName}</File.Name>
+                    </File.Label>
+                  </File>
                 </Control>
               </Field>
             </Column>
-            <Column size="6">
+            <Column size="8">
+              <Columns>
+                <Column size="6">
+                  <Field>
+                    <Label htmlFor="first-name" className="Label">
+                      First Name
+                    </Label>
+                    <Control>
+                      <Input
+                        id="first-name"
+                        placeholder="First Name"
+                        name="firstName"
+                        value={values.firstName}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                      />
+                    </Control>
+                  </Field>
+                </Column>
+                <Column size="6">
+                  <Field>
+                    <Label htmlFor="last-name">
+                      Last Name
+                    </Label>
+                    <Control>
+                      <Input
+                        id="last-name"
+                        placeholder="Last Name"
+                        name="lastName"
+                        value={values.lastName}
+                        onBlur={handleBlur}
+                        onChange={handleChange}
+                      />
+                    </Control>
+                  </Field>
+                </Column>
+              </Columns>
               <Field>
-                <Label htmlFor="last-name">
-                  Last Name
+                <Label htmlFor="email">
+                  Email
                 </Label>
                 <Control>
                   <Input
-                    id="last-name"
-                    placeholder="Last Name"
-                    value={lastName}
-                    onChange={updateLastName}
+                    id="email-address"
+                    placeholder="Enter your email address"
+                    value={values.email}
+                    name="email"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
+                  />
+                </Control>
+              </Field>
+              <Field>
+                <Label htmlFor="walletAddress">
+                  Wallet Address
+                </Label>
+                <Control>
+                  <Input
+                    id="wallet-address"
+                    placeholder="Enter your wallet address"
+                    value={values.walletAddress}
+                    name="walletAddress"
+                    onChange={handleChange}
+                    onBlur={handleBlur}
                   />
                 </Control>
               </Field>
             </Column>
           </Columns>
-          <Field>
-            <Label htmlFor="bio">
-              Bio
-            </Label>
-            <Control>
-              <Textarea
-                id="bio"
-                placeholder="Tell us about yourself."
-                value={bio}
-                maxLength={240}
-                onChange={updateBio}
-              />
-            </Control>
-            <Help>
-              {`Characters remaining: ${charactersRemaining}`}
-            </Help>
-          </Field>
-        </Column>
-      </Columns>
-      <hr className="separator" />
-      <Button color="success" onClick={save} disabled={!edited}>
-        Save
-      </Button>
-    </Box>
+          <hr className="separator" />
+          <SubmitButton onClick={handleSubmit}>
+            Save
+          </SubmitButton>
+        </Box>
+        )
+      }}
+    </Formik>
   );
 }

@@ -39,7 +39,6 @@ export default function Login() {
       localStorage.setItem('username', username);
     }
 
-    console.log({userCredentials})
     dispatch(attemptLogin(userCredentials))
       .catch(R.identity);
   };
