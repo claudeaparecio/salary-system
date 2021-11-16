@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
+import R from 'ramda'
 
 import { useReactToPrint } from "react-to-print";
 
 import { Title, Box, Button, Table } from "react-bulma-companion";
 
 import { attemptGetInvoice } from "_thunks/invoices";
-import { getInvoiceById } from "_api/invoices";
 
 const Container = styled.div`
   display: flex;
@@ -94,41 +94,28 @@ const TableHeader = styled.tr`
 `;
 
 export default function InvoiceDetails() {
+  const { invoice } = useSelector(R.pick(["invoice"]));
   const history = useHistory();
   const dispatch = useDispatch();
   const container = React.useRef(null);
   const [invoiceData, setInvoiceData] = useState({});
-
-  const fetchInvoice = async () => {
-    const path = window.location.pathname.split("/");
-    const id = path[path.length - 1];
-
-    // getInvoiceById(id)
-    //   .then((res) => {
-    //     console.log(res.invoice);
-    //     setInvoiceData(res.invoice);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-
-    const response = await dispatch(attemptGetInvoice("61938f946ff6f5c33f0992c3"))
-    console.log(response);
-  };
 
   const handlePrint = useReactToPrint({
     content: () => container.current,
   });
 
   useEffect(() => {
-    fetchInvoice();
+    dispatch(attemptGetInvoice("61938f946ff6f5c33f0992c3"))
   }, []);
+  
+  useEffect(() => {
+    setInvoiceData(invoice)
+  }, [invoice]);
 
-  return (
+  return invoiceData ? (
     <Box>
       <Title>Invoice Details</Title>
       <Button onClick={handlePrint}>Download</Button>
-
       <Container>
         <PaperContainer ref={container}>
           <LeftSection>
@@ -231,5 +218,5 @@ export default function InvoiceDetails() {
         </PaperContainer>
       </Container>
     </Box>
-  );
+  ) : null;
 }
