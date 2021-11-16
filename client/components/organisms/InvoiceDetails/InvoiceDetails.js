@@ -3,6 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
 import R from "ramda";
+import _ from "lodash";
+import moment from "moment";
 
 import { useReactToPrint } from "react-to-print";
 
@@ -46,7 +48,12 @@ const RightSection = styled.div`
 `;
 
 const EmployerDetails = styled.div`
-  margin: 50px 0px;
+  margin: 60px 0px;
+  width: 60%;
+`;
+
+const EmployeeDetails = styled.div`
+  width: 60%;
 `;
 
 const Container2 = styled.div`
@@ -65,9 +72,9 @@ const InvoiceTitleContainer2 = styled.div`
 `;
 
 const Logo = styled.div`
+  width: 60%;
   color: #fefffe;
   margin-top: 50px;
-  text-align: center;
   font-size: 50px;
   line-height: 50px;
 `;
@@ -89,125 +96,142 @@ const TableContainer = styled.div`
   margin: 48px auto;
 `;
 
-const TableHeader = styled.tr`
-  border: 1px solid #393d3c;
+const Header = styled.th`
+  font-size: 12px;
+  font-weight: bold;
 `;
 
-const renderPdfPreview = (invoiceData, container) => {
-  return (
-    <PaperContainer ref={container}>
-      <LeftSection>
-        <Logo>Logo</Logo>
-        <EmployerDetails>
-          <Text size={"15px"} weight={"500"} color={"#fefffe"}>
-            EMPLOYER
-          </Text>
-          <Container2>
-            <Text size={"12px"} weight={"500"} color={"#fefffe"}>
-              Employer Name
+const CellValue = styled.td`
+  font-size: 12px;
+`;
+
+const renderPdfPreview = (invoiceData) => {
+  if (!_.isEmpty(invoiceData)) {
+    return (
+      <PaperContainer>
+        <LeftSection>
+          <Logo>Logo</Logo>
+          <EmployerDetails>
+            <Text size={"15px"} weight={"500"} color={"#fefffe"}>
+              EMPLOYER
             </Text>
-            <Text size={"12px"} color={"#878A8B"}>
-              Address
-            </Text>
-            <Text size={"12px"} color={"#878A8B"}>
-              Email address
-            </Text>
-          </Container2>
-        </EmployerDetails>
-        <div>
-          <Text size={"15px"} weight={"500"} color={"#fefffe"}>
-            EMPLOYEE
-          </Text>
-          <Container2>
-            <Text size={"12px"} weight={"500"} color={"#fefffe"}>
-              Employee Name
-            </Text>
-            <Text size={"12px"} color={"#878A8B"}>
-              Position
-            </Text>
-            <Text size={"12px"} color={"#878A8B"}>
-              Email
-            </Text>
-          </Container2>
-        </div>
-      </LeftSection>
-      <RightSection>
-        <InvoiceTitleContainer>
-          <InvoiceTitleContainer2>
-            <Text
-              size={"48px"}
-              weight={"200"}
-              lineHeight={"45px"}
-              spacing={"4px"}
-            >
-              INVOICE
-            </Text>
-            <FlexContainer>
-              <Text weight={"600"} margin={"0px 0px 0px 2px"}>
-                Invoice#
+            <Container2>
+              <Text size={"12px"} weight={"500"} color={"#fefffe"}>
+                SwipeBit
               </Text>
+              <Text size={"12px"} color={"#878A8B"}>
+                Address
+              </Text>
+              <Text size={"12px"} color={"#878A8B"}>
+                Email address
+              </Text>
+            </Container2>
+          </EmployerDetails>
+          <EmployeeDetails>
+            <Text size={"15px"} weight={"500"} color={"#fefffe"}>
+              EMPLOYEE
+            </Text>
+            <Container2>
+              <Text size={"12px"} weight={"500"} color={"#fefffe"}>
+                {invoiceData?.user?.first_name +
+                  " " +
+                  invoiceData?.user?.last_name}
+              </Text>
+              {/* <Text size={"12px"} color={"#878A8B"}>
+                Position
+              </Text> */}
+              <Text size={"12px"} color={"#878A8B"}>
+                {invoiceData?.user?.email}
+              </Text>
+            </Container2>
+          </EmployeeDetails>
+        </LeftSection>
+        <RightSection>
+          <InvoiceTitleContainer>
+            <InvoiceTitleContainer2>
               <Text
-                weight={"300"}
-                spacing={"-0.5px"}
-                margin={"0px 0px 0px 2px"}
+                size={"48px"}
+                weight={"200"}
+                lineHeight={"45px"}
+                spacing={"4px"}
               >
-                4365876
+                INVOICE
+              </Text>
+              <FlexContainer>
+                <Text weight={"600"} margin={"0px 0px 0px 2px"}>
+                  Invoice#
+                </Text>
+                <Text
+                  weight={"300"}
+                  spacing={"-0.5px"}
+                  margin={"0px 0px 0px 2px"}
+                >
+                  {invoiceData?.reference_number}
+                </Text>
+              </FlexContainer>
+            </InvoiceTitleContainer2>
+          </InvoiceTitleContainer>
+          <div>
+            <FlexContainer>
+              <Text weight={"600"}>Date:</Text>
+
+              <Text margin={"0px 0px 0px 2px"}>
+                {moment(invoiceData?.createdAt).format("DD/MMMM/YYYY")}
               </Text>
             </FlexContainer>
-          </InvoiceTitleContainer2>
-        </InvoiceTitleContainer>
-        <div>
-          <FlexContainer>
-            <Text weight={"600"}>Date:</Text>
-            <Text margin={"0px 0px 0px 2px"}>28/November/2021</Text>
-          </FlexContainer>
-          <Text margin={"16px 0px 0px 0px"}>Total due:</Text>
-          <Text size={"20px"} weight={"600"} lineHeight={"24px"}>
-            1000.00 USD
-          </Text>
-          <FlexContainer margin={"16px 0px 0px 0px"} flexDirection={"column"}>
-            <Text>Status:</Text>
-            <Text
-              color={
-                invoiceData?.status === "pending"
-                  ? "#f78400"
-                  : invoiceData?.status === "approved"
-                  ? "#00a700"
-                  : "#7c8286"
-              }
-              size={"16px"}
-              weight={"500"}
-              lineHeight={"16px"}
-            >
-              Pending
+            <Text margin={"16px 0px 0px 0px"}>Total due:</Text>
+            <Text size={"20px"} weight={"600"} lineHeight={"24px"}>
+              {invoiceData?.amount} USD
             </Text>
-          </FlexContainer>
-        </div>
-        <TableContainer>
-          <Table hoverable fullwidth>
-            <thead>
-              <Table.Row>
-                <th>DATE</th>
-                <th>DESCRIPTION</th>
-                <th>HOURS</th>
-                <th>RATE</th>
-                <th>TOTAL</th>
-              </Table.Row>
-            </thead>
-            <tbody>
-              <tr>
-                <td>Nov 15th - Nov 30th</td>
-                <td>Description</td>
-                <td>Hours worked</td>
-                <td>Rate</td>
-                <td>Total</td>
-              </tr>
-            </tbody>
-          </Table>
-        </TableContainer>
-      </RightSection>
-    </PaperContainer>
-  );
+            <FlexContainer margin={"16px 0px 0px 0px"} flexDirection={"column"}>
+              <Text>Status:</Text>
+              <Text
+                color={
+                  invoiceData?.status === "pending"
+                    ? "#f78400"
+                    : invoiceData?.status === "approved"
+                    ? "#00a700"
+                    : "#7c8286"
+                }
+                size={"16px"}
+                weight={"500"}
+                lineHeight={"16px"}
+              >
+                {invoiceData?.status}
+              </Text>
+            </FlexContainer>
+          </div>
+          <TableContainer>
+            <Table hoverable fullwidth>
+              <thead>
+                <Table.Row>
+                  <Header>DATE</Header>
+                  <Header>DESCRIPTION</Header>
+                  <Header>HOURS</Header>
+                  <Header>RATE</Header>
+                  <Header>TOTAL</Header>
+                </Table.Row>
+              </thead>
+              <tbody>
+                <tr>
+                  <CellValue>
+                    For {moment(invoiceData?.start_date).format("MMM Do")} -{" "}
+                    {moment(invoiceData?.end_date).format("MMM Do")}
+                  </CellValue>
+                  <CellValue>{invoiceData?.description}</CellValue>
+                  <CellValue>{invoiceData?.number_of_hours}</CellValue>
+                  <CellValue>{invoiceData?.hourly_rate} usd/hr</CellValue>
+                  <CellValue>{invoiceData?.amount} USD</CellValue>
+                </tr>
+              </tbody>
+            </Table>
+          </TableContainer>
+        </RightSection>
+      </PaperContainer>
+    );
+  } else {
+    return;
+  }
 };
 
 export default function InvoiceDetails() {
@@ -217,51 +241,37 @@ export default function InvoiceDetails() {
   const container = useRef(null);
   const [invoiceData, setInvoiceData] = useState();
 
-  const getId = async () => {
+  const getId = () => {
     const path = window.location.pathname.split("/");
     const id = path[path.length - 1];
 
-    // getInvoiceById(id)
-    //   .then((res) => {
-    //     console.log(res.invoice);
-    //     setInvoiceData(res.invoice);
-    //   })
-    //   .catch((err) => {
-    //     console.log(err);
-    //   });
-
-    const response = await dispatch(attemptGetInvoice(id));
-    console.log(response);
+    dispatch(attemptGetInvoice(id));
   };
 
   /** Downloads invoice */
-  const handleDownload = () => {
-    if (!!invoiceData) {
-      useReactToPrint({
-        content: () => container.current,
-      });
-    } else {
-      return;
-    }
-  };
+  const handleDownload = useReactToPrint({
+    content: () => container.current,
+  });
 
   useEffect(() => {
-    dispatch(attemptGetInvoice("61938f946ff6f5c33f0992c3"));
+    getId();
   }, []);
 
   useEffect(() => {
     setInvoiceData(invoice);
   }, [invoice]);
 
-  return invoiceData ? (
+  return !!invoiceData ? (
     <Box>
       <Title>Invoice Details</Title>
-      <Button onClick={handleDownload} color="info">
-        Download
-      </Button>
+      {!_.isEmpty(invoiceData) && (
+        <Button onClick={handleDownload} color="info">
+          Download
+        </Button>
+      )}
 
-      <Container>
-        {!!invoiceData && renderPdfPreview(invoiceData, container)}
+      <Container ref={container}>
+        {!_.isEmpty(invoiceData) && renderPdfPreview(invoiceData)}
         {/* {renderPdfPreview(invoiceData, container)} */}
       </Container>
     </Box>

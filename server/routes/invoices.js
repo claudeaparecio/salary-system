@@ -49,26 +49,19 @@ router.get("/", requireAuth, (req, res) => {
 });
 
 router.get("/find/:id", requireAuth, (req, res) => {
-  Invoice.findById(
-    req.params.id,
-    {
-      __v: 0,
-      user: 0,
-    },
-    (err, invoice) => {
-      if (err) {
-        res.status(400).send({
-          message: "Get invoice failed",
-          err,
-        });
-      } else {
-        res.send({
-          message: "Invoice retrieved successfully",
-          invoice,
-        });
-      }
+  Invoice.findById(req.params.id, (err, invoice) => {
+    if (err) {
+      res.status(400).send({
+        message: "Get invoice failed",
+        err,
+      });
+    } else {
+      res.send({
+        message: "Invoice retrieved successfully",
+        invoice,
+      });
     }
-  );
+  }).populate("user");
 });
 
 router.post("/", requireAuth, (req, res) => {
