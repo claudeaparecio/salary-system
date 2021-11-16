@@ -10,6 +10,7 @@ import {
   getInvoiceById,
 } from "_api/invoices";
 import { addInvoice, setInvoices, updateInvoice } from "_actions/invoices";
+import { setInvoice } from "_actions/invoice";
 
 import { dispatchError } from "_utils/api";
 
@@ -26,11 +27,11 @@ export const attemptUpdateInvoice = (invoice) => (dispatch) =>
     })
     .catch(dispatchError(dispatch));
 
-export const attemptGetInvoice = (id) => (dispatch) => {
+export const attemptGetInvoice = id => dispatch => {
   getInvoiceById(id)
     .then((data) => {
-      console.log(data);
-      return data;
+      dispatch(setInvoice(data.invoice))
+      return data
     })
     .catch(dispatchError(dispatch));
 };
