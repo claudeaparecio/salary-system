@@ -19,7 +19,7 @@ import {
   Notification,
   Button,
 } from 'react-bulma-companion'
-import { attemptGetInvoices, attemptUpdateInvoice } from '_thunks/invoices';
+import { attemptGetInvoices, attemptUpdateInvoice, attemptGetInvoice } from '_thunks/invoices';
 import { attemptGetReceipts, attemptAddReceipt } from '_thunks/receipts';
 import { startPayment } from '../../../hooks/useEthereum'
 
@@ -95,10 +95,16 @@ export default function HomePage() {
   const { receipts } = useSelector(R.pick(['receipts']));
   const isAdmin = user.role === 'admin'
 
+  const getId = async () => {
+    const resp = await dispatch(attemptGetInvoice('61938f946ff6f5c33f0992c3'))
+    console.log(resp)
+  }
+  
   useEffect(() => {
     if (R.isEmpty(user)) {
       dispatch(push('/login'));
     } else {
+      getId()
       dispatch(attemptGetInvoices())
       dispatch(attemptGetReceipts())
       .catch(R.identity)

@@ -21,7 +21,6 @@ import HomePage from '_pages/HomePage';
 import InvoicePage from '_pages/InvoicePage';
 import SettingsPage from '_pages/SettingsPage';
 import LostPage from '_pages/LostPage';
-import WalletPage from '_pages/WalletPage';
 
 import Navigation from '_organisms/Navigation';
 import Footer from '_organisms/Footer';
@@ -59,7 +58,6 @@ export default function Main({ location }) {
           <Route path="/home" component={HomePage} />
           <Route path="/invoice" component={InvoicePage} />
           <Route path="/settings" component={SettingsPage} />
-          <Route path="/wallet" component={WalletPage} />
           <Route path="*" component={LostPage} />
         </Switch>
       </div>

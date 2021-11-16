@@ -50,8 +50,8 @@ router.get('/', requireAuth, (req, res) => {
     }
 });
 
-router.get('/find', requireAuth, (req, res) => {
-    Invoice.findById(req.body.id, {
+router.get('/find/:id', requireAuth, (req, res) => {
+    Invoice.findById(req.params.id, {
         __v: 0,
         user: 0
     }, (err, invoice) => {

@@ -7,6 +7,7 @@ import {
   postInvoice,
   getInvoices,
   putInvoice,
+  getInvoice,
 } from '_api/invoices';
 import {
   addInvoice,
@@ -56,5 +57,13 @@ export const attemptGetInvoices = () => dispatch =>
 
       dispatch(setInvoices(invoices));
       return data.invoices;
+    })
+    .catch(dispatchError(dispatch));
+
+export const attemptGetInvoice = id => dispatch =>
+  getInvoice(id)
+    .then(data => {
+      console.log('data', data)
+      return data;
     })
     .catch(dispatchError(dispatch));

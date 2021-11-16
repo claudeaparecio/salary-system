@@ -17,3 +17,8 @@ export const putInvoice = data =>
   .send(data)
   .then(handleSuccess)
   .catch(handleError)
+
+export const getInvoice = id =>
+  request.get(`/api/invoices/find/${id}`)
+    .then(handleSuccess)
+    .catch(handleError)
