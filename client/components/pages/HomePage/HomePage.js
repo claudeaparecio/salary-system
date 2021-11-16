@@ -2,17 +2,26 @@ import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { push } from 'connected-react-router';
 import R from 'ramda';
+import moment from 'moment'
+import axios from 'axios'
+import { store as RNC } from 'react-notifications-component';
+import numeral from 'numeral'
 
 import Section from 'react-bulma-companion/lib/Section';
 import Container from 'react-bulma-companion/lib/Container';
 import Title from 'react-bulma-companion/lib/Title';
 import { Bar } from 'react-chartjs-2'
+import styled from 'styled-components'
 import {
   Columns,
   Column,
   Box,
   Notification,
+  Button,
 } from 'react-bulma-companion'
+import { attemptGetInvoices, attemptUpdateInvoice } from '_thunks/invoices';
+import { attemptGetReceipts, attemptAddReceipt } from '_thunks/receipts';
+import { startPayment } from '../../../hooks/useEthereum'
 
 const options = {
   scales: {
@@ -31,73 +40,214 @@ const data = {
   datasets: [
     {
       data: [1200, 1900, 3000, 5000, 2000, 3000],
-      // backgroundColor: [
-      //   'rgba(255, 99, 132, 0.2)',
-      //   'rgba(54, 162, 235, 0.2)',
-      //   'rgba(255, 206, 86, 0.2)',
-      //   'rgba(75, 192, 192, 0.2)',
-      //   'rgba(153, 102, 255, 0.2)',
-      //   'rgba(255, 159, 64, 0.2)',
-      // ],
-      // borderColor: [
-      //   'rgba(255, 99, 132, 1)',
-      //   'rgba(54, 162, 235, 1)',
-      //   'rgba(255, 206, 86, 1)',
-      //   'rgba(75, 192, 192, 1)',
-      //   'rgba(153, 102, 255, 1)',
-      //   'rgba(255, 159, 64, 1)',
-      // ],
       borderWidth: 1,
     },
   ],
 };
 
+const StyledTitle = styled(Title)`
+  text-align: left;
+`;
+
+const StyledBox = styled(Box)`
+  border-radius: 7px;
+`;
+
+const InvoiceDateRange = styled.p`
+    color: #2c71f0;
+    font-size: 14px;
+    font-weight: 600;
+`
+
+const InvoiceNumber = styled.p`
+    font-size: 12px;
+`
+
+const Amount = styled.p`
+    font-weight: bold;
+    font-size: 14px;
+`
+
+const PayButton = styled(Button)`
+  /* background-color: #2c71f0;
+  color: #ffffff; */
+`;
+
+const Hash = styled.p`
+  font-size: 8px;
+`;
+
+const InvoiceMainContentContainer = styled(Column)`
+  align-items: flex-start;
+`;
+
+const Status = styled.p`
+    color: ${({ status }) => status === 'pending' ? '#f78400' : status === 'approved' ? '#00a700'  : '#7c8286'};
+    text-transform: uppercase;
+    font-size: 10px;
+    font-weight: 600;
+`
 
 export default function HomePage() {
   const dispatch = useDispatch();
   const { user } = useSelector(R.pick(['user']));
+  const { invoices } = useSelector(R.pick(['invoices']));
+  const { receipts } = useSelector(R.pick(['receipts']));
+  const isAdmin = user.role === 'admin'
 
   useEffect(() => {
     if (R.isEmpty(user)) {
       dispatch(push('/login'));
+    } else {
+      dispatch(attemptGetInvoices())
+      dispatch(attemptGetReceipts())
+      .catch(R.identity)
     }
   }, []);
 
+  const generateGreetings = () => {
+    const hour = moment().hour();
+    if (hour > 16){
+      return "Good evening";
+    }
+    if (hour > 11){
+      return "Good afternoon";
+    }
+     return 'Good morning';
+  }
+
+  const roundCryptoValueString = (str, decimalPlaces=18) => {
+    const arr = str.split(".");
+    const fraction = arr[1] .substr(0, decimalPlaces);
+    return arr[0] + "." + fraction;
+}
+
+  const getUSDToEthValue = async (amount) => {
+    const response = await axios.get(`https://api.coinmarketcap.com/data-api/v3/tools/price-conversion?amount=${amount}&convert_id=1027&id=2781`)
+    const ethValue = response.data?.data?.quote[0].price
+    
+    return roundCryptoValueString(`${ethValue}`)
+  }
+
+  const submitPayment = async (invoice) => {
+    const amount = invoice.amount
+    const userWalletAddress = invoice?.user?.walletAddress
+    const usdToEth = await getUSDToEthValue(amount)
+
+    const response = await startPayment({
+      amount: usdToEth,
+      address: userWalletAddress,
+    })
+
+    if (response.success) {
+      await dispatch(attemptUpdateInvoice({
+        id: invoice.id,
+        status: 'paid'
+      }))
+
+      await dispatch(attemptAddReceipt({
+        transaction: response.transaction,
+        employee: invoice.user.Id,
+        invoice: invoice.id,
+        amount: invoice.amount,
+      }))
+
+      RNC.addNotification({
+        title: 'Success!',
+        message: response.message,
+        type: 'success',
+        container: 'top-right',
+        animationIn: ['animated', 'fadeInRight'],
+        animationOut: ['animated', 'fadeOutRight'],
+        dismiss: {
+          duration: 5000,
+        },
+      });
+    } else {
+      RNC.addNotification({
+        title: `Error: Payment failed.`,
+        message: response.message,
+        type: 'danger',
+        container: 'top-right',
+        animationIn: ['animated', 'fadeInRight'],
+        animationOut: ['animated', 'fadeOutRight'],
+        dismiss: {
+          duration: 5000,
+        },
+      });
+    }
+  }
+  
   return (
     <div className="home-page page">
       <Section>
         <Container>
-          <Title size="1">
-            Home Page
-          </Title>
+          <StyledTitle>
+            {generateGreetings()} {user.firstName && `, ${user.firstName}!`}
+          </StyledTitle>
           <Columns>
             <Column>
-              <Box>
-                Balance
-              </Box>
-              <Box>
-                History
-                <Notification>
-                  Transaction 1
-                </Notification>
-                <Notification>
-                  Transaction 2
-                </Notification>
-                <Notification>
-                  Transaction 3
-                </Notification>
-              </Box>
+              {isAdmin && <StyledBox>
+                Payment Dues
+                {invoices.map((invoice, index) =>
+                  <Notification key={`home.invoice.${index}`}>
+                    <Columns>
+                      <InvoiceMainContentContainer>
+                          <InvoiceDateRange>
+                              For {moment(invoice.startDate).format('MMM Do')} - {moment(invoice.endDate).format('MMM Do')}
+                          </InvoiceDateRange>
+                      </InvoiceMainContentContainer>
+                      <Column narrow>
+                          <Amount>
+                              ${numeral(invoice.amount).format('0,0.00[00]')}
+                          </Amount>
+                          <Status status={invoice.status}>{invoice.status}</Status>
+                      </Column>
+                      {(!!invoice?.user?.walletAddress && invoice.status === 'pending') && <Column narrow>
+                        <PayButton onClick={() => submitPayment(invoice)} color="info">
+                        Pay
+                      </PayButton>
+                      </Column>}
+                    </Columns>
+                  </Notification>                
+                )}
+              </StyledBox>}
             </Column>
             <Column>
-              <Box>
-                Contracts
-              </Box>
-              <Box>
+              <StyledBox>
+                Paid this month
+                <p>
+                  (Amount)
+                </p>
+              </StyledBox>
+              <StyledBox>
+                History
+                {receipts.map((receipt, index) =>
+                  <Notification key={`home.receipt.${index}`}>
+                    <Columns>
+                      <InvoiceMainContentContainer>
+                          <InvoiceDateRange>
+                              {receipt.invoice.referenceNumber}
+                          </InvoiceDateRange>
+                          <Hash>
+                            {receipt.transaction.hash}
+                          </Hash>
+                      </InvoiceMainContentContainer>
+                      <Column narrow>
+                          <Amount>
+                              ${numeral(receipt.amount).format('0,0.00[00]')}
+                          </Amount>
+                      </Column>
+                    </Columns>
+                  </Notification>                   
+                )}
+              </StyledBox>
+              {!isAdmin && <StyledBox>
                 Money Earned Graph
                 <Bar data={data} options={{
                   onHover: () => {}
                 }} />
-              </Box>
+              </StyledBox>}
             </Column>
           </Columns>
         </Container>

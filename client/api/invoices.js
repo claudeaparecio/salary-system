@@ -11,3 +11,9 @@ export const getInvoices = () =>
   request.get('/api/invoices')
     .then(handleSuccess)
     .catch(handleError);
+
+export const putInvoice = data =>
+  request.put('/api/invoices')
+  .send(data)
+  .then(handleSuccess)
+  .catch(handleError)

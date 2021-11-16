@@ -27,7 +27,7 @@ router.get('/', requireAuth, (req, res) => {
                     invoices
                 });
             }
-        })
+        }).populate('user')
     } else {
         Invoice.find({
             user: req.user.id
@@ -66,7 +66,7 @@ router.get('/find', requireAuth, (req, res) => {
                 invoice
             });
         }
-    });
+    }).populate('user');
 });
 
 router.post('/', requireAuth, (req, res) => {
@@ -108,7 +108,7 @@ router.put('/', requireAuth, (req, res) => {
                 invoice,
             });
         }
-    });
+    }).populate('user')
 });
 
 router.delete('/', requireAuth, (req, res) => {

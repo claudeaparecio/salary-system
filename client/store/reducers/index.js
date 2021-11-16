@@ -5,6 +5,7 @@ import user from './user';
 import todos from './todos';
 import invoices from './invoices';
 import ethereum from './ethereum';
+import receipts from './receipts';
 
 const createRootReducer = history => combineReducers({
   router: connectRouter(history),
@@ -12,6 +13,7 @@ const createRootReducer = history => combineReducers({
   todos,
   invoices,
   ethereum,
+  receipts,
 });
 
 export default createRootReducer;

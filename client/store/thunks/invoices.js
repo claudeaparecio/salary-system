@@ -6,13 +6,25 @@ import { store as RNC } from 'react-notifications-component';
 import {
   postInvoice,
   getInvoices,
+  putInvoice,
 } from '_api/invoices';
 import {
   addInvoice,
   setInvoices,
+  updateInvoice
 } from '_actions/invoices';
 
 import { dispatchError } from '_utils/api';
+
+export const attemptUpdateInvoice = invoice => dispatch =>
+  putInvoice(camelToSnakeCase(invoice))
+    .then(data => {
+      const invoice = R.omit(['Id'], R.assoc('id', data.invoice._id, snakeToCamelCase(data.invoice)));
+
+      dispatch(updateInvoice(invoice));
+      return data.invoice;
+    })
+    .catch(dispatchError(dispatch));
 
 export const attemptAddInvoice = invoice => dispatch =>
   postInvoice(camelToSnakeCase(invoice))

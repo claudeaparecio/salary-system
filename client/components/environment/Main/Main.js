@@ -8,12 +8,10 @@ import R from 'ramda';
 import { attemptGetUser } from '_thunks/user';
 
 import {
-  Menu,
   Columns,
   Column,
   Navbar,
-  Title,
-  Image,
+  Button,
 } from 'react-bulma-companion'
 
 import WelcomePage from '_pages/WelcomePage';

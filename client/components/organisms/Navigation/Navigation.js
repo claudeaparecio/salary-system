@@ -83,16 +83,6 @@ export default function Navigation({ pathname }) {
                   Home
                 </Menu.Link>
               </Menu.ListItem>
-              {isAdmin && <Menu.ListItem>
-                <Menu.Link
-                  to="/wallet"
-                  active={location.pathname.includes('wallet')}
-                  component={Link}
-                >
-                  <FontAwesomeIcon icon={faWallet}/>
-                  Wallet
-                </Menu.Link>
-              </Menu.ListItem>}
               <Menu.ListItem>
                 <Menu.Link
                 >
@@ -120,7 +110,7 @@ export default function Navigation({ pathname }) {
                 </Menu.ListItem>}
                 </Menu.List>
               </Menu.ListItem>
-              <Menu.ListItem>
+              {!isAdmin && <Menu.ListItem>
                 <Menu.Link>
                 <FontAwesomeIcon icon={faCog} />
                   Settings
@@ -145,7 +135,7 @@ export default function Navigation({ pathname }) {
                     </Menu.Link>
                   </Menu.ListItem>
                 </Menu.List>
-            </Menu.ListItem>
+            </Menu.ListItem>}
             <Menu.ListItem>
               <Menu.Link onClick={logout} onKeyPress={logout}>
                 <FontAwesomeIcon icon={faSignOutAlt} />
@@ -155,123 +145,6 @@ export default function Navigation({ pathname }) {
           </Menu.List>
         </Menu>
         </StyledColumn>
-    // <Navbar fixed="top" shadow>
-    //   <Container>
-    //     <Navbar.Brand>
-    //       <Navbar.Item
-    //         to={auth ? '/home' : '/'}
-    //         aria-label="main navigation"
-    //         component={Link}
-    //       >
-    //         <Title className="logo" size="3">
-    //           Salary System
-    //         </Title>
-    //       </Navbar.Item>
-    //       <div className="navbar-brand-right">
-    //         {!auth && (
-    //           <Navbar.Item
-    //             className="is-hidden-desktop"
-    //             to="/login"
-    //             component={Link}
-    //           >
-    //             <Title size="6">
-    //               Login
-    //             </Title>
-    //           </Navbar.Item>
-    //         )}
-    //         {!auth && (
-    //           <Navbar.Item
-    //             className="is-hidden-desktop"
-    //             to="/register"
-    //             component={Link}
-    //           >
-    //             <Button color="success">Sign Up</Button>
-    //           </Navbar.Item>
-    //         )}
-    //         {auth && (
-    //           <Navbar.Item
-    //             className="is-hidden-desktop"
-    //             onClick={toggleDropdown}
-    //             onKeyPress={toggleDropdown}
-    //             hoverable
-    //             component="a"
-    //           >
-    //             <Image size="32x32">
-    //               <Image.Content
-    //                 className="profile-img"
-    //                 src={user.profilePic || '/images/default-profile.png'}
-    //               />
-    //             </Image>
-    //             <span className="dropdown-caret" />
-    //           </Navbar.Item>
-    //         )}
-    //       </div>
-    //     </Navbar.Brand>
-
-    //     {auth ? (
-    //       <Navbar.Menu>
-    //         <Navbar.Start>
-    //           <Navbar.Item
-    //             className="is-hidden-mobile"
-    //             to="/home"
-    //             active={isHome}
-    //             tab
-    //             component={Link}
-    //           >
-    //             <Title size="6">Home</Title>
-    //           </Navbar.Item>
-    //           <Navbar.Item
-    //             className="is-hidden-mobile"
-    //             to="/invoice"
-    //             active={isInvoice}
-    //             tab
-    //             component={Link}
-    //           >
-    //             <Title size="6">
-    //               Invoice
-    //             </Title>
-    //           </Navbar.Item>
-    //           <Navbar.Item
-    //             className="is-hidden-mobile"
-    //             to="/settings"
-    //             active={isSettings}
-    //             tab
-    //             component={Link}
-    //           >
-    //             <Title size="6">
-    //               Settings
-    //             </Title>
-    //           </Navbar.Item>
-    //         </Navbar.Start>
-    //         <Navbar.End>
-    //           <Navbar.Item onClick={toggleDropdown} onKeyPress={toggleDropdown} hoverable component="a">
-    //             <Image size="32x32">
-    //               <Image.Content
-    //                 className="profile-img"
-    //                 src={user.profilePic || '/images/default-profile.png'}
-    //               />
-    //             </Image>
-    //             <span className="dropdown-caret" />
-    //           </Navbar.Item>
-    //         </Navbar.End>
-    //       </Navbar.Menu>
-    //     ) : (
-    //       <Navbar.Menu>
-    //         <Navbar.End>
-    //           <Navbar.Item to="/login" component={Link}>
-    //             <Title size="6">
-    //               Login
-    //             </Title>
-    //           </Navbar.Item>
-    //           <Navbar.Item to="/register" component={Link}>
-    //             <Button color="success">Sign Up</Button>
-    //           </Navbar.Item>
-    //         </Navbar.End>
-    //       </Navbar.Menu>
-    //     )}
-    //     <UserDropdown open={open} closeDropdown={closeDropdown} />
-    //   </Container>
-    // </Navbar>
   ) : null;
 }
 

@@ -20,6 +20,8 @@ export const dispatchError = dispatch => res => {
     dispatch(push('/login'));
   }
 
+  console.log('error:', res)
+
   RNC.addNotification({
     title: `Error: ${res.status}`,
     message: res.body.message,

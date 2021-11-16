@@ -6,7 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { v4 } from 'uuid'
 import moment from 'moment'
 import styled from 'styled-components'
-import { accountChangedHandler, chainChangedHandler, connectWalletHandler } from '../../../hooks/useEthereum'
+import numeral from 'numeral'
 
 import {
     Table,
@@ -40,6 +40,30 @@ const Status = styled.p`
     font-weight: 600;
 `
 
+const renderInvoices = (invoices) => (
+    invoices.map(invoice =>
+        <Notification>
+            <Columns>
+                <Column>
+                    {invoice?.user?.lastName} {invoice?.user?.firstName && `, ${invoice?.user?.firstName}`}
+                    <InvoiceDateRange>
+                        For {moment(invoice.startDate).format('MMM Do')} - {moment(invoice.endDate).format('MMM Do')}
+                    </InvoiceDateRange>
+                    <InvoiceNumber>
+                        {invoice.referenceNumber}
+                    </InvoiceNumber>
+                </Column>
+                <Column narrow>
+                    <Amount>
+                        ${numeral(invoice.amount).format('0,0.00[00]')}
+                    </Amount>
+                    <Status status={invoice.status}>{invoice.status}</Status>
+                </Column>
+            </Columns>
+        </Notification>    
+    )
+)
+
 export default function InvoiceList() {
     const { invoices } = useSelector(R.pick(['invoices']));
 
@@ -48,27 +72,7 @@ export default function InvoiceList() {
             <Title>
                 Invoices
             </Title>
-            {invoices.map(invoice =>{
-                return  (
-                <Notification>
-                    <Columns>
-                        <Column>
-                            <InvoiceDateRange>
-                                For {moment(invoice.startDate).format('MMM Do')} - {moment(invoice.endDate).format('MMM Do')}
-                            </InvoiceDateRange>
-                            <InvoiceNumber>
-                                {invoice.referenceNumber}
-                            </InvoiceNumber>
-                        </Column>
-                        <Column narrow>
-                            <Amount>
-                                ${invoice.amount}
-                            </Amount>
-                            <Status status={invoice.status}>{invoice.status}</Status>
-                        </Column>
-                    </Columns>
-                </Notification>    )
-            })}
+            {!!invoices && renderInvoices(invoices)}
         </Box>
     )
 }

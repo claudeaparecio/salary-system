@@ -10,28 +10,18 @@ import {
 
 import { LOGOUT_USER } from '_actions/user';
 
-export function invoice(state = {}, action) {
-  switch (action.type) {
-    case ADD_INVOICE:
-      return action.invoice;
-    case UPDATE_INVOICE:
-      return update(state, action.invoice);
-    default:
-      return state;
-  }
-}
-
 export default function invoices(state = [], action) {
   const index = R.findIndex(R.propEq('id', action.id), state);
-  const updatedAtIndex = { $splice: [[index, 1, invoice(state[index], action)]] };
 
   switch (action.type) {
     case SET_INVOICES:
-      return update(state, { $set: action.invoices });
+      return state.concat(action.invoices);
     case ADD_INVOICE:
-      return update(state, { $push: [invoice(undefined, action)] });
+      return state.concat(action.invoice);
     case UPDATE_INVOICE:
-      return update(state, updatedAtIndex);
+      return state.map((invoice) =>
+        invoice.id === action.invoice.id ? Object.assign(invoice, action.invoice) : invoice
+      );
     case REMOVE_INVOICE:
       return update(state, { $splice: [[index, 1]] });
     case LOGOUT_USER:
