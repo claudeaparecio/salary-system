@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import styled from "styled-components";
@@ -93,11 +93,128 @@ const TableHeader = styled.tr`
   border: 1px solid #393d3c;
 `;
 
+const renderPdfPreview = (invoiceData, container) => {
+  return (
+    <PaperContainer ref={container}>
+      <LeftSection>
+        <Logo>Logo</Logo>
+        <EmployerDetails>
+          <Text size={"15px"} weight={"500"} color={"#fefffe"}>
+            EMPLOYER
+          </Text>
+          <Container2>
+            <Text size={"12px"} weight={"500"} color={"#fefffe"}>
+              Employer Name
+            </Text>
+            <Text size={"12px"} color={"#878A8B"}>
+              Address
+            </Text>
+            <Text size={"12px"} color={"#878A8B"}>
+              Email address
+            </Text>
+          </Container2>
+        </EmployerDetails>
+        <div>
+          <Text size={"15px"} weight={"500"} color={"#fefffe"}>
+            EMPLOYEE
+          </Text>
+          <Container2>
+            <Text size={"12px"} weight={"500"} color={"#fefffe"}>
+              Employee Name
+            </Text>
+            <Text size={"12px"} color={"#878A8B"}>
+              Position
+            </Text>
+            <Text size={"12px"} color={"#878A8B"}>
+              Email
+            </Text>
+          </Container2>
+        </div>
+      </LeftSection>
+      <RightSection>
+        <InvoiceTitleContainer>
+          <InvoiceTitleContainer2>
+            <Text
+              size={"48px"}
+              weight={"200"}
+              lineHeight={"45px"}
+              spacing={"4px"}
+            >
+              INVOICE
+            </Text>
+            <FlexContainer>
+              <Text weight={"600"} margin={"0px 0px 0px 2px"}>
+                Invoice#
+              </Text>
+              <Text
+                weight={"300"}
+                spacing={"-0.5px"}
+                margin={"0px 0px 0px 2px"}
+              >
+                4365876
+              </Text>
+            </FlexContainer>
+          </InvoiceTitleContainer2>
+        </InvoiceTitleContainer>
+        <div>
+          <FlexContainer>
+            <Text weight={"600"}>Date:</Text>
+            <Text margin={"0px 0px 0px 2px"}>28/November/2021</Text>
+          </FlexContainer>
+          <Text margin={"16px 0px 0px 0px"}>Total due:</Text>
+          <Text size={"20px"} weight={"600"} lineHeight={"24px"}>
+            1000.00 USD
+          </Text>
+          <FlexContainer margin={"16px 0px 0px 0px"} flexDirection={"column"}>
+            <Text>Status:</Text>
+            <Text
+              color={
+                invoiceData?.status === "pending"
+                  ? "#f78400"
+                  : invoiceData?.status === "approved"
+                  ? "#00a700"
+                  : "#7c8286"
+              }
+              size={"16px"}
+              weight={"500"}
+              lineHeight={"16px"}
+            >
+              Pending
+            </Text>
+          </FlexContainer>
+        </div>
+        <TableContainer>
+          <Table hoverable fullwidth>
+            <thead>
+              <Table.Row>
+                <th>DATE</th>
+                <th>DESCRIPTION</th>
+                <th>HOURS</th>
+                <th>RATE</th>
+                <th>TOTAL</th>
+              </Table.Row>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Nov 15th - Nov 30th</td>
+                <td>Description</td>
+                <td>Hours worked</td>
+                <td>Rate</td>
+                <td>Total</td>
+              </tr>
+            </tbody>
+          </Table>
+        </TableContainer>
+      </RightSection>
+    </PaperContainer>
+  );
+};
+
 export default function InvoiceDetails() {
   const history = useHistory();
   const dispatch = useDispatch();
-  const container = React.useRef(null);
-  const [invoiceData, setInvoiceData] = useState({});
+  const container = useRef(null);
+  const [invoiceData, setInvoiceData] = useState();
 
   const getId = async () => {
     const path = window.location.pathname.split("/");
@@ -112,15 +229,20 @@ export default function InvoiceDetails() {
     //     console.log(err);
     //   });
 
-    const response = await dispatch(
-      attemptGetInvoice("61938f946ff6f5c33f0992c3")
-    );
+    const response = await dispatch(attemptGetInvoice(id));
     console.log(response);
   };
 
-  const handlePrint = useReactToPrint({
-    content: () => container.current,
-  });
+  /** Downloads invoice */
+  const handleDownload = () => {
+    if (!!invoiceData) {
+      useReactToPrint({
+        content: () => container.current,
+      });
+    } else {
+      return;
+    }
+  };
 
   useEffect(() => {
     getId();
@@ -129,108 +251,13 @@ export default function InvoiceDetails() {
   return (
     <Box>
       <Title>Invoice Details</Title>
-      <Button onClick={handlePrint}>Download</Button>
+      <Button onClick={handleDownload} color="info">
+        Download
+      </Button>
 
       <Container>
-        <PaperContainer ref={container}>
-          <LeftSection>
-            <Logo>Logo</Logo>
-            <EmployerDetails>
-              <Text size={"15px"} weight={"500"} color={"#fefffe"}>
-                EMPLOYER
-              </Text>
-              <Container2>
-                <Text size={"12px"} weight={"500"} color={"#fefffe"}>
-                  Employer Name
-                </Text>
-                <Text size={"12px"} color={"#878A8B"}>
-                  Address
-                </Text>
-                <Text size={"12px"} color={"#878A8B"}>
-                  Email address
-                </Text>
-              </Container2>
-            </EmployerDetails>
-            <div>
-              <Text size={"15px"} weight={"500"} color={"#fefffe"}>
-                EMPLOYEE
-              </Text>
-              <Container2>
-                <Text size={"12px"} weight={"500"} color={"#fefffe"}>
-                  Employee Name
-                </Text>
-                <Text size={"12px"} color={"#878A8B"}>
-                  Position
-                </Text>
-                <Text size={"12px"} color={"#878A8B"}>
-                  Email
-                </Text>
-              </Container2>
-            </div>
-          </LeftSection>
-          <RightSection>
-            <InvoiceTitleContainer>
-              <InvoiceTitleContainer2>
-                <Text
-                  size={"48px"}
-                  weight={"200"}
-                  lineHeight={"45px"}
-                  spacing={"4px"}
-                >
-                  INVOICE
-                </Text>
-                <FlexContainer>
-                  <Text weight={"600"} margin={"0px 0px 0px 2px"}>
-                    Invoice#
-                  </Text>
-                  <Text
-                    weight={"300"}
-                    spacing={"-0.5px"}
-                    margin={"0px 0px 0px 2px"}
-                  >
-                    4365876
-                  </Text>
-                </FlexContainer>
-              </InvoiceTitleContainer2>
-            </InvoiceTitleContainer>
-            <div>
-              <FlexContainer>
-                <Text weight={"600"}>Date:</Text>
-                <Text margin={"0px 0px 0px 2px"}>28/November/2021</Text>
-              </FlexContainer>
-              <Text margin={"16px 0px 0px 0px"}>Total due:</Text>
-              <Text size={"20px"} weight={"600"} lineHeight={"24px"}>
-                1000.00 USD
-              </Text>
-              <FlexContainer margin={"16px 0px 0px 0px"}>
-                <Text>Status:</Text>
-                <Text>Pending</Text>
-              </FlexContainer>
-            </div>
-            <TableContainer>
-              <Table hoverable fullwidth>
-                <thead>
-                  <Table.Row>
-                    <th>DATE</th>
-                    <th>DESCRIPTION</th>
-                    <th>HOURS</th>
-                    <th>RATE</th>
-                    <th>TOTAL</th>
-                  </Table.Row>
-                </thead>
-                <tbody>
-                  <tr>
-                    <td>Nov 15th - Nov 30th</td>
-                    <td>Description</td>
-                    <td>Hours worked</td>
-                    <td>Rate</td>
-                    <td>Total</td>
-                  </tr>
-                </tbody>
-              </Table>
-            </TableContainer>
-          </RightSection>
-        </PaperContainer>
+        {!!invoiceData && renderPdfPreview(invoiceData, container)}
+        {/* {renderPdfPreview(invoiceData, container)} */}
       </Container>
     </Box>
   );
