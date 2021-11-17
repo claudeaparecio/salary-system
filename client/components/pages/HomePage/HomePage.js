@@ -18,8 +18,8 @@ import {
   Box,
   Notification,
   Button,
-} from 'react-bulma-companion'
-import { startPayment } from '../../../hooks/useEthereum'
+} from "react-bulma-companion";
+import { startPayment } from "../../../hooks/useEthereum";
 import { attemptGetInvoices, attemptUpdateInvoice } from "_thunks/invoices";
 import { attemptGetReceipts, attemptAddReceipt } from "_thunks/receipts";
 
@@ -105,7 +105,7 @@ export default function HomePage() {
       dispatch(push("/login"));
     } else {
       dispatch(attemptGetInvoices());
-      dispatch(attemptGetReceipts())
+      dispatch(attemptGetReceipts());
     }
   }, []);
 

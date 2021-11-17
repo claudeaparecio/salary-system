@@ -21,7 +21,7 @@ router.get("/", requireAuth, (req, res) => {
           invoices,
         });
       }
-    });
+    }).populate("user");
   } else {
     Invoice.find(
       {
