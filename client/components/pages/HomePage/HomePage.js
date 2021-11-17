@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { push } from "connected-react-router";
 import R from "ramda";
@@ -18,10 +18,15 @@ import {
   Box,
   Notification,
   Button,
+  Modal,
+  Image,
+  Message,
 } from "react-bulma-companion";
 import { startPayment } from "../../../hooks/useEthereum";
 import { attemptGetInvoices, attemptUpdateInvoice } from "_thunks/invoices";
 import { attemptGetReceipts, attemptAddReceipt } from "_thunks/receipts";
+
+import ModalQrCode from "_organisms/ModalQrCode";
 
 const options = {
   scales: {
@@ -95,6 +100,10 @@ const Status = styled.p`
 
 export default function HomePage() {
   const dispatch = useDispatch();
+  const [invoiceData, setInvoiceData] = useState();
+  const [show, setShow] = useState({
+    payModal: false,
+  });
   const { user } = useSelector(R.pick(["user"]));
   const { invoices } = useSelector(R.pick(["invoices"]));
   const { receipts } = useSelector(R.pick(["receipts"]));
@@ -188,6 +197,36 @@ export default function HomePage() {
     }
   };
 
+  const confirmPayment = async (invoice) => {
+    await dispatch(
+      attemptUpdateInvoice({
+        id: invoice.id,
+        status: "paid",
+      })
+    );
+
+    // await dispatch(
+    //   attemptAddReceipt({
+    //     transaction: response.transaction,
+    //     employee: invoice.user.Id,
+    //     invoice: invoice.id,
+    //     amount: invoice.amount,
+    //   })
+    // );
+
+    RNC.addNotification({
+      title: "Success!",
+      message: "Paid",
+      type: "success",
+      container: "top-right",
+      animationIn: ["animated", "fadeInRight"],
+      animationOut: ["animated", "fadeOutRight"],
+      dismiss: {
+        duration: 5000,
+      },
+    });
+  };
+
   return (
     <div className="home-page page">
       <Section>
@@ -221,7 +260,11 @@ export default function HomePage() {
                           invoice.status === "pending" && (
                             <Column narrow>
                               <PayButton
-                                onClick={() => submitPayment(invoice)}
+                                onClick={() => {
+                                  setShow({ payModal: true });
+                                  setInvoiceData(invoice);
+                                  // submitPayment(invoice)
+                                }}
                                 color="info"
                               >
                                 Pay
@@ -274,6 +317,12 @@ export default function HomePage() {
           </Columns>
         </Container>
       </Section>
+      <ModalQrCode
+        show={show}
+        invoiceData={invoiceData}
+        setShow={setShow}
+        confirmPayment={confirmPayment}
+      />
     </div>
   );
 }

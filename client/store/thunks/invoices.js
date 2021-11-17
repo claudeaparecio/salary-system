@@ -23,15 +23,16 @@ export const attemptUpdateInvoice = (invoice) => (dispatch) =>
       );
 
       dispatch(updateInvoice(invoice));
+      window.location.reload();
       return data.invoice;
     })
     .catch(dispatchError(dispatch));
 
-export const attemptGetInvoice = id => dispatch => {
+export const attemptGetInvoice = (id) => (dispatch) => {
   getInvoiceById(id)
     .then((data) => {
-      dispatch(setInvoice(data.invoice))
-      return data
+      dispatch(setInvoice(data.invoice));
+      return data;
     })
     .catch(dispatchError(dispatch));
 };
