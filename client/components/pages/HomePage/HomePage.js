@@ -144,7 +144,7 @@ export default function HomePage() {
     return roundCryptoValueString(`${ethValue}`);
   };
 
-  const submitPayment = async (invoice) => {
+  const payUsingMetamask = async (invoice) => {
     const amount = invoice.amount;
     const userWalletAddress = invoice?.user?.walletAddress;
     const usdToEth = await getUSDToEthValue(amount);
@@ -243,6 +243,8 @@ export default function HomePage() {
                     <Notification key={`home.invoice.${index}`}>
                       <Columns>
                         <InvoiceMainContentContainer>
+                          
+                          {invoice?.user?.firstName} {invoice?.user?.lastName}
                           <InvoiceDateRange>
                             For {moment(invoice.startDate).format("MMM Do")} -{" "}
                             {moment(invoice.endDate).format("MMM Do")}
@@ -260,10 +262,13 @@ export default function HomePage() {
                           invoice.status === "pending" && (
                             <Column narrow>
                               <PayButton
-                                onClick={() => {
+                                onClick={async () => {
                                   setShow({ payModal: true });
-                                  setInvoiceData(invoice);
-                                  // submitPayment(invoice)
+                                  const usdToEth = await getUSDToEthValue(invoice.amount);
+                                  setInvoiceData({
+                                    ...invoice,
+                                    eth: usdToEth,
+                                  });
                                 }}
                                 color="info"
                               >
@@ -279,10 +284,6 @@ export default function HomePage() {
             </Column>
             <Column>
               <StyledBox>
-                Paid this month
-                <p>(Amount)</p>
-              </StyledBox>
-              <StyledBox>
                 History
                 {receipts.map((receipt, index) => (
                   <Notification key={`home.receipt.${index}`}>
@@ -291,7 +292,7 @@ export default function HomePage() {
                         <InvoiceDateRange>
                           {receipt.invoice.referenceNumber}
                         </InvoiceDateRange>
-                        <Hash>{receipt.transaction.hash}</Hash>
+                        <Hash>{receipt.transaction?.hash}</Hash>
                       </InvoiceMainContentContainer>
                       <Column narrow>
                         <Amount>
@@ -322,6 +323,7 @@ export default function HomePage() {
         invoiceData={invoiceData}
         setShow={setShow}
         confirmPayment={confirmPayment}
+        payUsingMetamask={payUsingMetamask}
       />
     </div>
   );

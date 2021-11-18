@@ -23,7 +23,6 @@ export const attemptUpdateInvoice = (invoice) => (dispatch) =>
       );
 
       dispatch(updateInvoice(invoice));
-      window.location.reload();
       return data.invoice;
     })
     .catch(dispatchError(dispatch));

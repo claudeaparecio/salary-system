@@ -9,13 +9,13 @@ export default function FooterComponent() {
 
   return (
     <Footer>
-      <Container>
+      {/* <Container> */}
         <Content className="has-text-centered">
           <p>
             {`Copyright Ⓒ ${year} Salary System. All Rights Reserved.`}
           </p>
         </Content>
-      </Container>
+      {/* </Container> */}
     </Footer>
   );
 }

@@ -12,6 +12,7 @@ import {
   Message,
 } from "react-bulma-companion";
 import QRCode from "qrcode.react";
+import numeral from 'numeral'
 
 const WalletContainer = styled.div`
   display: flex;
@@ -30,6 +31,7 @@ export default function ModalQrCode({
   invoiceData,
   setShow,
   confirmPayment,
+  payUsingMetamask,
 }) {
   const [btnDisable, setBtnDisable] = useState(false);
 
@@ -68,7 +70,7 @@ export default function ModalQrCode({
                   renderAs={"svg"}
                 />
                 <Title size="3" subtitle>
-                  Amount: {invoiceData?.amount} USD
+                  ${numeral(invoiceData?.amount).format("0,0.00[00]")} USD ≈ {numeral(invoiceData?.eth).format("0,0.00[000000]")} ETH
                 </Title>
                 <Field>
                   <WalletContainer>
@@ -101,6 +103,16 @@ export default function ModalQrCode({
                     }}
                   >
                     PAYMENT CONFIRMED
+                  </Button>
+                </ConfirmationBtnContainer>
+                or
+                <ConfirmationBtnContainer>
+                  <Button
+                    style={{ margin: "0px 4px", backgroundColor: '#f88414' }}
+                    color="info"
+                    onClick={() => payUsingMetamask(invoiceData)}
+                  >
+                    Pay via Metamask
                   </Button>
                 </ConfirmationBtnContainer>
               </Message.Body>
