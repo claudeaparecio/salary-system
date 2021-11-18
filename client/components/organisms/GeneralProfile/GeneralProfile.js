@@ -90,40 +90,7 @@ export default function GeneralProfile() {
           </Title>
           <hr className="separator" />
           <Columns>
-            <Column size="4">
-              <Title size="3" className="has-text-centered">
-                {user.usernameCase}
-              </Title>
-              <Image>
-                <Image.Content
-                  className="profile-img"
-                  src={values.profilePic || '/images/default-profile.png'}
-                  alt="Profile"
-                />
-              </Image>
-              <Field>
-                <Control>
-                  <File hasName>
-                    <File.Label>
-                      <File.Input
-                        value={values.profilePic}
-                        onChange={onFileChange}
-                        type="file"
-                        name="profilePic"
-                      />
-                      <File.CTA>
-                        <File.Icon>
-                          <FontAwesomeIcon icon={faUpload} />
-                        </File.Icon>
-                        <File.Text>Choose a file...</File.Text>
-                      </File.CTA>
-                      <File.Name>{values.fileName}</File.Name>
-                    </File.Label>
-                  </File>
-                </Control>
-              </Field>
-            </Column>
-            <Column size="8">
+            <Column>
               <Columns>
                 <Column size="6">
                   <Field>
