@@ -74,8 +74,6 @@ const Amount = styled.p`
 `;
 
 const PayButton = styled(Button)`
-  /* background-color: #2c71f0;
-  color: #ffffff; */
 `;
 
 const Hash = styled.p`
