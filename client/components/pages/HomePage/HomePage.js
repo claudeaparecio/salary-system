@@ -73,8 +73,7 @@ const Amount = styled.p`
   font-size: 14px;
 `;
 
-const PayButton = styled(Button)`
-`;
+const PayButton = styled(Button)``;
 
 const Hash = styled.p`
   font-size: 8px;
@@ -248,10 +247,12 @@ export default function HomePage() {
                 <StyledBox>
                   Payment Dues
                   {invoices.map((invoice, index) => (
-                    <CustomNotification onClick={() => openInvoice(invoice)} key={`home.invoice.${index}`}>
+                    <CustomNotification
+                      onClick={() => openInvoice(invoice)}
+                      key={`home.invoice.${index}`}
+                    >
                       <Columns>
                         <InvoiceMainContentContainer>
-                          
                           {invoice?.user?.firstName} {invoice?.user?.lastName}
                           <InvoiceDateRange>
                             For {moment(invoice.startDate).format("MMM Do")} -{" "}
@@ -272,7 +273,9 @@ export default function HomePage() {
                               <PayButton
                                 onClick={async () => {
                                   setShow({ payModal: true });
-                                  const usdToEth = await getUSDToEthValue(invoice.amount);
+                                  const usdToEth = await getUSDToEthValue(
+                                    invoice.amount
+                                  );
                                   setInvoiceData({
                                     ...invoice,
                                     eth: usdToEth,
@@ -280,7 +283,7 @@ export default function HomePage() {
                                 }}
                                 color="info"
                               >
-                                Pay
+                                {/* Pay */}
                               </PayButton>
                             </Column>
                           )}
