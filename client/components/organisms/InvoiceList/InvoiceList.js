@@ -51,14 +51,15 @@ const Status = styled.p`
   font-weight: 600;
 `;
 
+const CustomNotification = styled(Notification)`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
 const renderInvoices = (invoices, openInvoice) =>
   invoices.map((invoice) => (
-    <Notification>
-      <div
-        onClick={() => {
-          openInvoice(invoice);
-        }}
-      >
+    <CustomNotification onClick={() => openInvoice(invoice)}>
         <Columns>
           <Column>
             {invoice?.user?.lastName}{" "}
@@ -74,8 +75,7 @@ const renderInvoices = (invoices, openInvoice) =>
             <Status status={invoice.status}>{invoice.status}</Status>
           </Column>
         </Columns>
-      </div>
-    </Notification>
+    </CustomNotification>
   ));
 
 export default function InvoiceList() {

@@ -1,9 +1,9 @@
 import React, { useState, useEffect }  from 'react';
 import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useDispatch, useSelector } from 'react-redux';
 import R from 'ramda';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faFileInvoice, faHome, faCog, faSignOutAlt, faWallet } from '@fortawesome/free-solid-svg-icons';
 import { ethers } from 'ethers'
 import styled from 'styled-components'
@@ -19,11 +19,18 @@ import {
 
 import { attemptLogout } from '_thunks/auth';
 
+const CustomIcon = styled(FontAwesomeIcon)`
+  margin-right: 10px;
+`;
+
 const StyledColumn = styled(Column)`
+  background-color: #ffffff;
+  padding: 24px;
 `
 
 const StyledTitle = styled(Title)`
-  color: #ffffff;
+  color: #01090f;
+  margin-bottom: 20px;
 `
 
 const TitleContainer = styled(Navbar.Item)`
@@ -32,6 +39,15 @@ const TitleContainer = styled(Navbar.Item)`
   }
 `
 
+const MenuLink = styled(Menu.Link)`
+  font-size: 13px;
+  padding: 6px 16px;
+  border-radius: 4px;
+`;
+
+const MenuItem = styled(Menu.ListItem)`
+  margin-bottom: 5px;
+`;
 
 export default function Navigation({ pathname }) {
   const dispatch = useDispatch();
@@ -43,18 +59,7 @@ export default function Navigation({ pathname }) {
     setAuth(!R.isEmpty(user));
   }, [user.username]);
 
-  const openMetaMask = () => {
-    // A Web3Provider wraps a standard Web3 provider, which is
-    // what MetaMask injects as window.ethereum into each page
-    const provider = new ethers.providers.Web3Provider(window.ethereum)
-
-    // The MetaMask plugin also allows signing transactions to
-    // send ether and pay to change state within the blockchain.
-    // For this, you need the account signer...
-    const signer = provider.getSigner()
-  }
-
-    const logout = () =>
+  const logout = () =>
     dispatch(attemptLogout())
       .catch(R.identity);
 
@@ -70,78 +75,78 @@ export default function Navigation({ pathname }) {
               Salary System
             </StyledTitle>
           </TitleContainer>
-          <button  onClick={openMetaMask}/>
           <Image />
             <Menu.List>
-              <Menu.ListItem>
-                <Menu.Link
+              <MenuItem>
+                <MenuLink
                   to="/home"
                   active={location.pathname.includes('home')}
                   component={Link}
+                  color="#000"
                 >
-                  <FontAwesomeIcon icon={faHome}/>
+                  <CustomIcon icon={faHome}/>
                   Home
-                </Menu.Link>
-              </Menu.ListItem>
-              <Menu.ListItem>
-                <Menu.Link
+                </MenuLink>
+              </MenuItem>
+              <MenuItem>
+                <MenuLink
                 >
-                  <FontAwesomeIcon icon={faFileInvoice} />
+                  <CustomIcon icon={faFileInvoice} />
                   Invoices
-                </Menu.Link>
+                </MenuLink>
                 <Menu.List>
-                <Menu.ListItem>
-                  <Menu.Link
+                <MenuItem>
+                  <MenuLink
                     to="/invoice/history"
                     active={pathname.includes('history') || pathname === '/invoice' || pathname === '/invoice/'}
                     component={Link}
                   >
                     Invoices
-                  </Menu.Link>
-                </Menu.ListItem>
-                {!isAdmin && <Menu.ListItem>
-                  <Menu.Link
+                  </MenuLink>
+                </MenuItem>
+                {!isAdmin && <MenuItem>
+                  <MenuLink
                     to="/invoice/create"
                     active={pathname.includes('create')}
                     component={Link}
                   >
                     Create
-                  </Menu.Link>
-                </Menu.ListItem>}
+                  </MenuLink>
+                </MenuItem>}
                 </Menu.List>
-              </Menu.ListItem>
-              {!isAdmin && <Menu.ListItem>
-                <Menu.Link>
-                <FontAwesomeIcon icon={faCog} />
+              </MenuItem>
+              {!isAdmin && <MenuItem>
+                <MenuLink>
+                <CustomIcon icon={faCog} />
                   Settings
-                </Menu.Link>
+                </MenuLink>
                 <Menu.List>
-                  <Menu.ListItem>
-                    <Menu.Link
+                  <MenuItem>
+                    <MenuLink
                       to="/settings/profile/"
                       active={location.pathname.includes('/settings/profile')}
                       component={Link}
                     >
                       Profile
-                    </Menu.Link>
-                  </Menu.ListItem>
-                  <Menu.ListItem>
-                    <Menu.Link
+                    </MenuLink>
+                  </MenuItem>
+                  <MenuItem>
+                    <MenuLink
                       to="/settings/account/"
                       active={location.pathname.includes('/settings/account')}
                       component={Link}
                     >
                       Account
-                    </Menu.Link>
-                  </Menu.ListItem>
+                    </MenuLink>
+                  </MenuItem>
                 </Menu.List>
-            </Menu.ListItem>}
-            <Menu.ListItem>
-              <Menu.Link onClick={logout} onKeyPress={logout}>
-                <FontAwesomeIcon icon={faSignOutAlt} />
+            </MenuItem>}
+            <MenuItem>
+              <MenuLink onClick={logout} onKeyPress={logout}>
+                <CustomIcon icon={faSignOutAlt} />
                 Logout
-              </Menu.Link>
-            </Menu.ListItem>
+              </MenuLink>
+            </MenuItem>
           </Menu.List>
         </Menu>
         </StyledColumn>

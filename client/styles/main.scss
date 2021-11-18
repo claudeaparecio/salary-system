@@ -2,3 +2,8 @@
   margin-top: 44px;
   min-height: calc(100vh - 134px);
 }
+
+.menu-list a.is-active {
+  background-color: #f4f3f6 !important;
+  color: #01090f;
+}

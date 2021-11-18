@@ -96,6 +96,12 @@ const Status = styled.p`
   font-weight: 600;
 `;
 
+const CustomNotification = styled(Notification)`
+  :hover {
+    cursor: pointer;
+  }
+`;
+
 export default function HomePage() {
   const dispatch = useDispatch();
   const [invoiceData, setInvoiceData] = useState();
@@ -195,6 +201,10 @@ export default function HomePage() {
     }
   };
 
+  const openInvoice = (invoice) => {
+    dispatch(push("/invoice/details/" + invoice.id, { state: invoice }));
+  };
+
   const confirmPayment = async (invoice) => {
     await dispatch(
       attemptUpdateInvoice({
@@ -238,7 +248,7 @@ export default function HomePage() {
                 <StyledBox>
                   Payment Dues
                   {invoices.map((invoice, index) => (
-                    <Notification key={`home.invoice.${index}`}>
+                    <CustomNotification onClick={() => openInvoice(invoice)} key={`home.invoice.${index}`}>
                       <Columns>
                         <InvoiceMainContentContainer>
                           
@@ -275,7 +285,7 @@ export default function HomePage() {
                             </Column>
                           )}
                       </Columns>
-                    </Notification>
+                    </CustomNotification>
                   ))}
                 </StyledBox>
               )}
