@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import {
+  Title,
   Field,
   Input,
   Icon,
@@ -51,6 +52,7 @@ export default function ModalQrCode({
                 <div>Send Payment</div>
               </Message.Header>
               <Message.Body>
+                {console.log(invoiceData)}
                 Scan this QR code or copy the wallet address below
                 <QRCode
                   value={
@@ -65,6 +67,9 @@ export default function ModalQrCode({
                   includeMargin={false}
                   renderAs={"svg"}
                 />
+                <Title size="3" subtitle>
+                  Amount: {invoiceData?.amount} USD
+                </Title>
                 <Field>
                   <WalletContainer>
                     <div>{invoiceData?.user?.walletAddress}</div>
