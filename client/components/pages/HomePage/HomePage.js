@@ -246,73 +246,108 @@ export default function HomePage() {
               {isAdmin && (
                 <StyledBox>
                   Payment Dues
-                  {invoices.map((invoice, index) => (
-                    <CustomNotification
-                      onClick={() => openInvoice(invoice)}
-                      key={`home.invoice.${index}`}
-                    >
-                      <Columns>
-                        <InvoiceMainContentContainer>
-                          {invoice?.user?.firstName} {invoice?.user?.lastName}
-                          <InvoiceDateRange>
-                            For {moment(invoice.startDate).format("MMM Do")} -{" "}
-                            {moment(invoice.endDate).format("MMM Do")}
-                          </InvoiceDateRange>
-                        </InvoiceMainContentContainer>
-                        <Column narrow>
-                          <Amount>
-                            ${numeral(invoice.amount).format("0,0.00[00]")}
-                          </Amount>
-                          <Status status={invoice.status}>
-                            {invoice.status}
-                          </Status>
-                        </Column>
-                        {!!invoice?.user?.walletAddress &&
-                          invoice.status === "pending" && (
+                  {invoices.map((invoice, index) => {
+                    if (index <= 5) {
+                      return (
+                        <CustomNotification
+                          onClick={() => openInvoice(invoice)}
+                          key={`home.invoice.${index}`}
+                        >
+                          <Columns>
+                            <InvoiceMainContentContainer>
+                              {invoice?.user?.firstName}{" "}
+                              {invoice?.user?.lastName}
+                              <InvoiceDateRange>
+                                For {moment(invoice.startDate).format("MMM Do")}{" "}
+                                - {moment(invoice.endDate).format("MMM Do")}
+                              </InvoiceDateRange>
+                            </InvoiceMainContentContainer>
                             <Column narrow>
-                              <PayButton
-                                onClick={async () => {
-                                  setShow({ payModal: true });
-                                  const usdToEth = await getUSDToEthValue(
-                                    invoice.amount
-                                  );
-                                  setInvoiceData({
-                                    ...invoice,
-                                    eth: usdToEth,
-                                  });
-                                }}
-                                color="info"
-                              >
-                                {/* Pay */}
-                              </PayButton>
+                              <Amount>
+                                ${numeral(invoice.amount).format("0,0.00[00]")}
+                              </Amount>
+                              <Status status={invoice.status}>
+                                {invoice.status}
+                              </Status>
                             </Column>
-                          )}
-                      </Columns>
-                    </CustomNotification>
-                  ))}
+                            {!!invoice?.user?.walletAddress &&
+                              invoice.status === "pending" && (
+                                <Column narrow>
+                                  <PayButton
+                                    onClick={async () => {
+                                      setShow({ payModal: true });
+                                      const usdToEth = await getUSDToEthValue(
+                                        invoice.amount
+                                      );
+                                      setInvoiceData({
+                                        ...invoice,
+                                        eth: usdToEth,
+                                      });
+                                    }}
+                                    color="info"
+                                  >
+                                    Pay
+                                  </PayButton>
+                                </Column>
+                              )}
+                          </Columns>
+                        </CustomNotification>
+                      );
+                    } else {
+                      return;
+                    }
+                  })}
+                  {invoices.length > 5 ? (
+                    <Title
+                      style={{ cursor: "pointer" }}
+                      subtitle
+                      onClick={() => {
+                        dispatch(push("/invoice/history"));
+                      }}
+                    >
+                      See All
+                    </Title>
+                  ) : null}
                 </StyledBox>
               )}
             </Column>
             <Column>
               <StyledBox>
                 History
-                {receipts.map((receipt, index) => (
-                  <Notification key={`home.receipt.${index}`}>
-                    <Columns>
-                      <InvoiceMainContentContainer>
-                        <InvoiceDateRange>
-                          {receipt.invoice.referenceNumber}
-                        </InvoiceDateRange>
-                        <Hash>{receipt.transaction?.hash}</Hash>
-                      </InvoiceMainContentContainer>
-                      <Column narrow>
-                        <Amount>
-                          ${numeral(receipt.amount).format("0,0.00[00]")}
-                        </Amount>
-                      </Column>
-                    </Columns>
-                  </Notification>
-                ))}
+                {receipts.map((receipt, index) => {
+                  if (index <= 5) {
+                    return (
+                      <Notification key={`home.receipt.${index}`}>
+                        <Columns>
+                          <InvoiceMainContentContainer>
+                            <InvoiceDateRange>
+                              {receipt.invoice.referenceNumber}
+                            </InvoiceDateRange>
+                            <Hash>{receipt.transaction?.hash}</Hash>
+                          </InvoiceMainContentContainer>
+                          <Column narrow>
+                            <Amount>
+                              ${numeral(receipt.amount).format("0,0.00[00]")}
+                            </Amount>
+                          </Column>
+                        </Columns>
+                      </Notification>
+                    );
+                  } else {
+                    return;
+                  }
+                })}
+                {receipts.length > 5 ? (
+                  <Title
+                    style={{ cursor: "pointer" }}
+                    subtitle
+                    onClick={() => {
+                      dispatch(push("/receipt/history"));
+                    }}
+                  >
+                    See All
+                  </Title>
+                ) : null}
               </StyledBox>
               {!isAdmin && (
                 <StyledBox>
