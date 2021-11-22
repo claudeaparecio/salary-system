@@ -48,7 +48,9 @@ router.get('/', requireAuth, (req, res) => {
                     receipts
                 });
             }
-        });
+        })
+        .populate('employee')
+        .populate('invoice')
     }
 });
 
@@ -68,7 +70,9 @@ router.get('/find/:id', requireAuth, (req, res) => {
                 receipt
             });
         }
-    }).populate('user');
+    })
+    .populate('employee')
+    .populate('invoice')
 });
 
 router.post('/', requireAuth, (req, res) => {

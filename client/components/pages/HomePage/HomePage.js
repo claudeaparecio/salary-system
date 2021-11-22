@@ -243,18 +243,15 @@ export default function HomePage() {
           </StyledTitle>
           <Columns>
             <Column>
-              {isAdmin && (
+              {isAdmin ? (
                 <StyledBox>
                   Payment Dues
                   {invoices.map((invoice, index) => {
                     if (index <= 5) {
                       return (
-                        <CustomNotification
-                          onClick={() => openInvoice(invoice)}
-                          key={`home.invoice.${index}`}
-                        >
+                        <CustomNotification key={`home.invoice.${index}`}>
                           <Columns>
-                            <InvoiceMainContentContainer>
+                            <InvoiceMainContentContainer onClick={() => openInvoice(invoice)}>
                               {invoice?.user?.firstName}{" "}
                               {invoice?.user?.lastName}
                               <InvoiceDateRange>
@@ -290,6 +287,52 @@ export default function HomePage() {
                                   </PayButton>
                                 </Column>
                               )}
+                          </Columns>
+                        </CustomNotification>
+                      );
+                    } else {
+                      return;
+                    }
+                  })}
+                  {invoices.length > 5 ? (
+                    <Title
+                      style={{ cursor: "pointer" }}
+                      subtitle
+                      onClick={() => {
+                        dispatch(push("/invoice/history"));
+                      }}
+                    >
+                      See All
+                    </Title>
+                  ) : null}
+                </StyledBox>
+              ): (
+                <StyledBox>
+                  Invoices
+                  {invoices.map((invoice, index) => {
+                    if (index <= 5) {
+                      return (
+                        <CustomNotification
+                          onClick={() => openInvoice(invoice)}
+                          key={`home.invoice.${index}`}
+                        >
+                          <Columns>
+                            <InvoiceMainContentContainer>
+                              {invoice?.user?.firstName}{" "}
+                              {invoice?.user?.lastName}
+                              <InvoiceDateRange>
+                                For {moment(invoice.startDate).format("MMM Do")}{" "}
+                                - {moment(invoice.endDate).format("MMM Do")}
+                              </InvoiceDateRange>
+                            </InvoiceMainContentContainer>
+                            <Column narrow>
+                              <Amount>
+                                ${numeral(invoice.amount).format("0,0.00[00]")}
+                              </Amount>
+                              <Status status={invoice.status}>
+                                {invoice.status}
+                              </Status>
+                            </Column>
                           </Columns>
                         </CustomNotification>
                       );

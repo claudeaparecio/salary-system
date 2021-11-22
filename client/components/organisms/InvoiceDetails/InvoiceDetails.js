@@ -236,15 +236,13 @@ const renderPdfPreview = (invoiceData) => {
 
 export default function InvoiceDetails() {
   const { invoice } = useSelector(R.pick(["invoice"]));
-  const history = useHistory();
   const dispatch = useDispatch();
   const container = useRef(null);
   const [invoiceData, setInvoiceData] = useState();
+  const path = window.location.pathname.split("/");
+  const id = path[path.length - 1];
 
   const getId = () => {
-    const path = window.location.pathname.split("/");
-    const id = path[path.length - 1];
-
     dispatch(attemptGetInvoice(id));
   };
 
