@@ -54,7 +54,6 @@ export default function ModalQrCode({
                 <div>Send Payment</div>
               </Message.Header>
               <Message.Body>
-                {console.log(invoiceData)}
                 Scan this QR code or copy the wallet address below
                 <QRCode
                   value={

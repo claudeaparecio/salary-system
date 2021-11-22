@@ -7,10 +7,10 @@ import createRootReducer from './reducers';
 export default function configureStore(history, initialState = {}) {
   const middlewares = [routerMiddleware(history), thunk];
 
-  if (process.env.NODE_ENV === 'development') {
-    const logger = createLogger({ collapsed: true, diff: true });
-    middlewares.push(logger);
-  }
+  // if (process.env.NODE_ENV === 'development') {
+  //   const logger = createLogger({ collapsed: true, diff: true });
+  //   middlewares.push(logger);
+  // }
 
   return createStore(
     createRootReducer(history),

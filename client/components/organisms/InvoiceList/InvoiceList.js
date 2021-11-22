@@ -188,7 +188,7 @@ export default function InvoiceList() {
   
   const renderInvoices = (invoices, openInvoice) =>
   invoices.map((invoice) => (
-    <CustomNotification>
+    <CustomNotification key={invoice.id}>
       <Columns>
         <Column onClick={() => openInvoice(invoice)}>
           {invoice?.user?.lastName}{" "}

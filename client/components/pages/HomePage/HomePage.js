@@ -28,18 +28,6 @@ import { attemptGetReceipts, attemptAddReceipt } from "_thunks/receipts";
 
 import ModalQrCode from "_organisms/ModalQrCode";
 
-const options = {
-  scales: {
-    yAxes: [
-      {
-        ticks: {
-          beginAtZero: true,
-        },
-      },
-    ],
-  },
-};
-
 const data = {
   labels: ["JAN", "FEB", "MAR", "APR", "MAY", "JUN"],
   datasets: [
@@ -400,7 +388,7 @@ export default function HomePage() {
                   </Title>
                 ) : null}
               </StyledBox>
-              {!isAdmin && (
+              {/* {!isAdmin && (
                 <StyledBox>
                   Money Earned Graph
                   <Bar
@@ -410,7 +398,7 @@ export default function HomePage() {
                     }}
                   />
                 </StyledBox>
-              )}
+              )} */}
             </Column>
           </Columns>
         </Container>
