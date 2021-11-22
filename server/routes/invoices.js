@@ -27,10 +27,6 @@ router.get("/", requireAuth, (req, res) => {
       {
         user: req.user.id,
       },
-      {
-        __v: 0,
-        user: 0,
-      },
       (err, invoices) => {
         if (err) {
           res.status(400).send({
@@ -43,8 +39,7 @@ router.get("/", requireAuth, (req, res) => {
             invoices,
           });
         }
-      }
-    ).populate("user");
+      }).populate("user");
   }
 });
 

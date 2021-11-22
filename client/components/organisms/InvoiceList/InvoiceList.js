@@ -18,6 +18,7 @@ import ModalQrCode from "_organisms/ModalQrCode";
 import { startPayment } from "../../../hooks/useEthereum";
 import { attemptUpdateInvoice } from "_thunks/invoices";
 import { attemptAddReceipt } from "_thunks/receipts";
+import { store as RNC } from "react-notifications-component";
 
 import {
   Table,
@@ -97,12 +98,37 @@ export default function InvoiceList() {
   };  
 
   const confirmPayment = async (invoice) => {
-    await dispatch(
+    dispatch(
       attemptUpdateInvoice({
         id: invoice.id,
         status: "paid",
       })
     );
+
+    dispatch(
+      attemptAddReceipt({
+        transaction: {
+          paymentType: 'manual'
+        },
+        employee: invoice.user.Id,
+        invoice: invoice.id,
+        amount: invoice.amount,
+      })
+    );
+
+    RNC.addNotification({
+      title: "Success!",
+      message: "Paid",
+      type: "success",
+      container: "top-right",
+      animationIn: ["animated", "fadeInRight"],
+      animationOut: ["animated", "fadeOutRight"],
+      dismiss: {
+        duration: 5000,
+      },
+    });
+
+    setShow({ payModal: false })
   }
 
     const payUsingMetamask = async (invoice) => {
@@ -158,8 +184,6 @@ export default function InvoiceList() {
       }
     };
   
-    console.log(isAdmin)
-
   const renderInvoices = (invoices, openInvoice) =>
   invoices.map((invoice) => (
     <CustomNotification>
