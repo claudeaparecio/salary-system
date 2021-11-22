@@ -122,25 +122,18 @@ export default function Navigation({ pathname }) {
             </Menu.List>
           </MenuItem>
           <MenuItem>
-            <MenuLink>
+            <MenuLink
+              to="/receipt/history"
+              active={
+                pathname.includes("receipt") ||
+                pathname === "/receipt" ||
+                pathname === "/receipt/"
+              }
+              component={Link}            
+            >
               <CustomIcon icon={faFileInvoice} />
               Receipts
             </MenuLink>
-            <Menu.List>
-              <MenuItem>
-                <MenuLink
-                  to="/receipt/history"
-                  active={
-                    pathname.includes("receipt") ||
-                    pathname === "/receipt" ||
-                    pathname === "/receipt/"
-                  }
-                  component={Link}
-                >
-                  Receipts
-                </MenuLink>
-              </MenuItem>
-            </Menu.List>
           </MenuItem>
           {!isAdmin && (
             <MenuItem>

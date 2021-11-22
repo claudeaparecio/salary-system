@@ -114,7 +114,7 @@ export default function HomePage() {
 
   useEffect(() => {
     if (R.isEmpty(user)) {
-      dispatch(push("/login"));
+      dispatch(push("/"));
     } else {
       dispatch(attemptGetInvoices());
       dispatch(attemptGetReceipts());

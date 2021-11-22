@@ -66,7 +66,7 @@ export const attemptLogout = () => dispatch =>
         },
       });
 
-      dispatch(push('/login'));
+      dispatch(push('/'));
       return data;
     })
     .catch(dispatchError(dispatch));

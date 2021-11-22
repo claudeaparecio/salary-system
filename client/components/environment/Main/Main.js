@@ -49,7 +49,7 @@ export default function Main({ location }) {
           <Column>
             <div className="main">
               <Switch>
-                <Route path="/" component={LoginPage} />
+                <Route exact path="/" component={LoginPage} />
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/home" component={HomePage} />
                 <Route path="/invoice" component={InvoicePage} />

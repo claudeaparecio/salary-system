@@ -19,7 +19,7 @@ export default function ReceiptPage({ location }) {
 
   useEffect(() => {
     if (R.isEmpty(user)) {
-      dispatch(push("/login"));
+      dispatch(push("/"));
     } else {
       dispatch(attemptGetReceipts())
         .catch(R.identity)
