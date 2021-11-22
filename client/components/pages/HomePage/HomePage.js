@@ -251,7 +251,9 @@ export default function HomePage() {
                       return (
                         <CustomNotification key={`home.invoice.${index}`}>
                           <Columns>
-                            <InvoiceMainContentContainer onClick={() => openInvoice(invoice)}>
+                            <InvoiceMainContentContainer
+                              onClick={() => openInvoice(invoice)}
+                            >
                               {invoice?.user?.firstName}{" "}
                               {invoice?.user?.lastName}
                               <InvoiceDateRange>
@@ -306,7 +308,7 @@ export default function HomePage() {
                     </Title>
                   ) : null}
                 </StyledBox>
-              ): (
+              ) : (
                 <StyledBox>
                   Invoices
                   {invoices.map((invoice, index) => {
@@ -348,7 +350,7 @@ export default function HomePage() {
                         dispatch(push("/invoice/history"));
                       }}
                     >
-                      See All
+                      See All...
                     </Title>
                   ) : null}
                 </StyledBox>
