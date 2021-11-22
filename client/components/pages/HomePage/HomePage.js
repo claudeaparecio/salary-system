@@ -185,6 +185,8 @@ export default function HomePage() {
           duration: 5000,
         },
       });
+
+    setShow({ payModal: false })
     } else {
       RNC.addNotification({
         title: `Error: Payment failed.`,
