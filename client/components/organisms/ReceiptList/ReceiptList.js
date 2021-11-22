@@ -32,18 +32,27 @@ const Hash = styled.p`
 
 const InvoiceMainContentContainer = styled(Column)`
   align-items: flex-start;
+  padding: 0.1rem !important;
 `;
 
 const renderReceipts = (receipts) =>
   receipts.map((receipt, index) => (
     <Notification key={`home.receipt.${index}`}>
       <Columns>
-        <InvoiceMainContentContainer>
-          <InvoiceDateRange>
-            {receipt?.invoice?.referenceNumber}
-          </InvoiceDateRange>
-          <Hash>{receipt?.transaction?.hash}</Hash>
-        </InvoiceMainContentContainer>
+        <Column>
+          <InvoiceMainContentContainer>
+            <InvoiceDateRange>
+              {receipt?.invoice?.referenceNumber}
+            </InvoiceDateRange>
+            <Hash>{receipt?.transaction?.hash}</Hash>
+          </InvoiceMainContentContainer>
+          <InvoiceMainContentContainer>
+            {receipt?.employee?.lastName}
+            {receipt?.employee?.firstName &&
+              `, ${receipt?.employee?.firstName}`}
+          </InvoiceMainContentContainer>
+        </Column>
+
         <Column narrow>
           <Amount>${numeral(receipt?.amount).format("0,0.00[00]")}</Amount>
         </Column>
