@@ -12,7 +12,7 @@ import {
   Message,
 } from "react-bulma-companion";
 import QRCode from "qrcode.react";
-import numeral from 'numeral'
+import numeral from "numeral";
 
 const WalletContainer = styled.div`
   display: flex;
@@ -50,11 +50,18 @@ export default function ModalQrCode({
         <Modal.Content style={{ display: "flex", justifyContent: "center" }}>
           <Image>
             <Message style={{ width: "400px" }}>
-              <Message.Header>
+              <Message.Header style={{ justifyContent: "center" }}>
                 <div>Send Payment</div>
               </Message.Header>
-              <Message.Body>
-                Scan this QR code or copy the wallet address below
+              <Message.Body
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  flexDirection: "column",
+                }}
+              >
+                <div>Scan this QR code or copy the wallet address below</div>
+                <br />
                 <QRCode
                   value={
                     invoiceData?.user?.walletAddress
@@ -69,7 +76,8 @@ export default function ModalQrCode({
                   renderAs={"svg"}
                 />
                 <Title size="3" subtitle>
-                  ${numeral(invoiceData?.amount).format("0,0.00[00]")} USD ≈ {numeral(invoiceData?.eth).format("0,0.00[000000]")} ETH
+                  ${numeral(invoiceData?.amount).format("0,0.00[00]")} USD ≈{" "}
+                  {numeral(invoiceData?.eth).format("0,0.00[000000]")} ETH
                 </Title>
                 <Field>
                   <WalletContainer>
@@ -104,10 +112,10 @@ export default function ModalQrCode({
                     PAYMENT CONFIRMED
                   </Button>
                 </ConfirmationBtnContainer>
-                or
+                <div style={{ marginTop: "8px" }}>or</div>
                 <ConfirmationBtnContainer>
                   <Button
-                    style={{ margin: "0px 4px", backgroundColor: '#f88414' }}
+                    style={{ margin: "0px 4px", backgroundColor: "#f88414" }}
                     color="info"
                     onClick={() => payUsingMetamask(invoiceData)}
                   >

@@ -152,8 +152,8 @@ export default function HomePage() {
           status: "paid",
         })
       );
-
-      dispatch(
+      setShow({ payModal: false });
+      await dispatch(
         attemptAddReceipt({
           transaction: response.transaction,
           employee: invoice.user.Id,
@@ -174,7 +174,7 @@ export default function HomePage() {
         },
       });
 
-    setShow({ payModal: false })
+      setShow({ payModal: false });
     } else {
       RNC.addNotification({
         title: `Error: Payment failed.`,
@@ -202,10 +202,12 @@ export default function HomePage() {
       })
     );
 
-    dispatch(
+    setShow({ payModal: false });
+
+    await dispatch(
       attemptAddReceipt({
         transaction: {
-          paymentType: 'manual'
+          paymentType: "manual",
         },
         employee: invoice.user.Id,
         invoice: invoice.id,
@@ -225,7 +227,7 @@ export default function HomePage() {
       },
     });
 
-    setShow({ payModal: false })
+    setShow({ payModal: false });
   };
 
   return (
