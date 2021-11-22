@@ -88,7 +88,7 @@ export default function InvoiceList() {
   const [show, setShow] = useState({
     payModal: false,
   });
-  const [activeSort, setActiveSort] = useState("unpaid");
+  const [activeSort, setActiveSort] = useState("all");
   const [invoiceList, setInvoiceList] = useState(invoices);
 
   const isAdmin = user.role === "admin";
