@@ -104,7 +104,15 @@ export default function InvoiceList() {
     } else if (type === "paid") {
       newList = invoices.filter((invoice) => invoice.status === "paid");
     } else {
-      newList = invoices;
+      let list = [...invoices];
+      list.map((invoice, index) => {
+        if (invoice.status === "pending") {
+          list.splice(index, 1);
+          list.unshift(invoice);
+        }
+      });
+
+      newList = list;
     }
 
     return newList;
