@@ -89,9 +89,16 @@ const CustomNotification = styled(Notification)`
   }
 `;
 
+const LinkText = styled.span`
+  cursor: pointer;
+  text-decoration: underline;
+  color: blue;
+`;
+
 export default function HomePage() {
   const dispatch = useDispatch();
   const [invoiceData, setInvoiceData] = useState();
+
   const [show, setShow] = useState({
     payModal: false,
   });
@@ -152,8 +159,8 @@ export default function HomePage() {
           status: "paid",
         })
       );
-
-      dispatch(
+      setShow({ payModal: false });
+      await dispatch(
         attemptAddReceipt({
           transaction: response.transaction,
           employee: invoice.user.Id,
@@ -174,7 +181,7 @@ export default function HomePage() {
         },
       });
 
-    setShow({ payModal: false })
+      setShow({ payModal: false });
     } else {
       RNC.addNotification({
         title: `Error: Payment failed.`,
@@ -202,10 +209,12 @@ export default function HomePage() {
       })
     );
 
-    dispatch(
+    setShow({ payModal: false });
+
+    await dispatch(
       attemptAddReceipt({
         transaction: {
-          paymentType: 'manual'
+          paymentType: "manual",
         },
         employee: invoice.user.Id,
         invoice: invoice.id,
@@ -225,7 +234,7 @@ export default function HomePage() {
       },
     });
 
-    setShow({ payModal: false })
+    setShow({ payModal: false });
   };
 
   return (
@@ -239,8 +248,12 @@ export default function HomePage() {
             <Column size="two-thirds">
               {isAdmin ? (
                 <StyledBox>
-                  Payment Dues
-                  {invoices.map((invoice, index) => {
+                  <div>
+                    <Title size="4" subtitle component="h4">
+                      Payment Dues
+                    </Title>
+                  </div>
+                  {invoices?.map((invoice, index) => {
                     if (index <= 5) {
                       return (
                         <CustomNotification key={`home.invoice.${index}`}>
@@ -291,15 +304,13 @@ export default function HomePage() {
                     }
                   })}
                   {invoices.length > 5 ? (
-                    <Title
-                      style={{ cursor: "pointer" }}
-                      subtitle
+                    <LinkText
                       onClick={() => {
                         dispatch(push("/invoice/history"));
                       }}
                     >
-                      See All...
-                    </Title>
+                      See All
+                    </LinkText>
                   ) : null}
                 </StyledBox>
               ) : (
@@ -337,22 +348,22 @@ export default function HomePage() {
                     }
                   })}
                   {invoices.length > 5 ? (
-                    <Title
-                      style={{ cursor: "pointer" }}
-                      subtitle
+                    <LinkText
                       onClick={() => {
                         dispatch(push("/invoice/history"));
                       }}
                     >
-                      See All...
-                    </Title>
+                      See All
+                    </LinkText>
                   ) : null}
                 </StyledBox>
               )}
             </Column>
             <Column>
               <StyledBox>
-                History
+                <Title size="4" subtitle component="h4">
+                  History
+                </Title>
                 {receipts.map((receipt, index) => {
                   if (index <= 5) {
                     return (
@@ -377,15 +388,13 @@ export default function HomePage() {
                   }
                 })}
                 {receipts.length > 5 ? (
-                  <Title
-                    style={{ cursor: "pointer" }}
-                    subtitle
+                  <LinkText
                     onClick={() => {
                       dispatch(push("/receipt/history"));
                     }}
                   >
                     See All
-                  </Title>
+                  </LinkText>
                 ) : null}
               </StyledBox>
               {/* {!isAdmin && (
