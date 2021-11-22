@@ -9,7 +9,6 @@ import { attemptGetUser } from "_thunks/user";
 
 import { Columns, Column, Navbar, Button } from "react-bulma-companion";
 
-import WelcomePage from "_pages/WelcomePage";
 import LoginPage from "_pages/LoginPage";
 import RegisterPage from "_pages/RegisterPage";
 import HomePage from "_pages/HomePage";
@@ -50,8 +49,7 @@ export default function Main({ location }) {
           <Column>
             <div className="main">
               <Switch>
-                <Route exact path="/" component={WelcomePage} />
-                <Route path="/login" component={LoginPage} />
+                <Route path="/" component={LoginPage} />
                 <Route path="/register" component={RegisterPage} />
                 <Route path="/home" component={HomePage} />
                 <Route path="/invoice" component={InvoicePage} />
