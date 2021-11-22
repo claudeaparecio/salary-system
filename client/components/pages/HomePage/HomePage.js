@@ -212,14 +212,16 @@ export default function HomePage() {
       })
     );
 
-    // await dispatch(
-    //   attemptAddReceipt({
-    //     transaction: response.transaction,
-    //     employee: invoice.user.Id,
-    //     invoice: invoice.id,
-    //     amount: invoice.amount,
-    //   })
-    // );
+    await dispatch(
+      attemptAddReceipt({
+        transaction: {
+          paymentType: 'manual'
+        },
+        employee: invoice.user.Id,
+        invoice: invoice.id,
+        amount: invoice.amount,
+      })
+    );
 
     RNC.addNotification({
       title: "Success!",
