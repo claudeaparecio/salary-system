@@ -67,6 +67,19 @@ const ClickableInvoice = styled(Column)`
   cursor: pointer;
 `;
 
+const SortContainer = styled.div`
+  display: flex;
+  justify-content: end;
+`;
+
+const SortLink = styled.span`
+  padding: 0px 4px;
+  cursor: pointer;
+  color: ${(props) => (props.type === props.sort ? "blue" : "black")};
+  text-decoration: ${(props) => (props.type === props.sort ? "underline" : "")};
+  text-decoration-color: blue;
+`;
+
 export default function InvoiceList() {
   const dispatch = useDispatch();
   const { invoices } = useSelector(R.pick(["invoices"]));
@@ -75,8 +88,28 @@ export default function InvoiceList() {
   const [show, setShow] = useState({
     payModal: false,
   });
+  const [activeSort, setActiveSort] = useState("unpaid");
+  const [invoiceList, setInvoiceList] = useState(invoices);
 
   const isAdmin = user.role === "admin";
+
+  const handleInvoiceSort = (type) => {
+    let newList = [];
+
+    if (type === "unpaid") {
+      newList = invoices.filter(
+        (invoice) =>
+          invoice.status === "pending" && invoice?.user?.walletAddress
+      );
+    } else if (type === "paid") {
+      newList = invoices.filter((invoice) => invoice.status === "paid");
+    } else {
+      newList = invoices;
+    }
+
+    return newList;
+  };
+
   const openInvoice = (invoice) => {
     dispatch(push("/invoice/details/" + invoice.id, { state: invoice }));
   };
@@ -259,7 +292,32 @@ export default function InvoiceList() {
     <>
       <Box>
         <Title>Invoices</Title>
-        {!!invoices && renderInvoices(invoices, openInvoice, isAdmin)}
+        <SortContainer>
+          <div>Sort by:</div>
+          <SortLink
+            type={"unpaid"}
+            sort={activeSort}
+            onClick={() => setActiveSort("unpaid")}
+          >
+            Unpaid
+          </SortLink>
+          <SortLink
+            type={"paid"}
+            sort={activeSort}
+            onClick={() => setActiveSort("paid")}
+          >
+            Paid
+          </SortLink>
+          <SortLink
+            type={"all"}
+            sort={activeSort}
+            onClick={() => setActiveSort("all")}
+          >
+            All
+          </SortLink>
+        </SortContainer>
+        {!!invoices &&
+          renderInvoices(handleInvoiceSort(activeSort), openInvoice, isAdmin)}
         <ModalQrCode
           show={show}
           invoiceData={invoiceData}
