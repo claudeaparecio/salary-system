@@ -304,7 +304,7 @@ export default function HomePage() {
                         dispatch(push("/invoice/history"));
                       }}
                     >
-                      See All
+                      See All...
                     </Title>
                   ) : null}
                 </StyledBox>
