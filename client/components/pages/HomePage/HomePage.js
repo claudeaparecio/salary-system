@@ -158,14 +158,14 @@ export default function HomePage() {
     });
 
     if (response.success) {
-      await dispatch(
+      dispatch(
         attemptUpdateInvoice({
           id: invoice.id,
           status: "paid",
         })
       );
 
-      await dispatch(
+      dispatch(
         attemptAddReceipt({
           transaction: response.transaction,
           employee: invoice.user.Id,
@@ -205,14 +205,14 @@ export default function HomePage() {
   };
 
   const confirmPayment = async (invoice) => {
-    await dispatch(
+    dispatch(
       attemptUpdateInvoice({
         id: invoice.id,
         status: "paid",
       })
     );
 
-    await dispatch(
+    dispatch(
       attemptAddReceipt({
         transaction: {
           paymentType: 'manual'
@@ -234,6 +234,8 @@ export default function HomePage() {
         duration: 5000,
       },
     });
+
+    setShow({ payModal: false })
   };
 
   return (
@@ -244,7 +246,7 @@ export default function HomePage() {
             {generateGreetings()} {user.firstName && `, ${user.firstName}!`}
           </StyledTitle>
           <Columns>
-            <Column>
+            <Column size="two-thirds">
               {isAdmin ? (
                 <StyledBox>
                   Payment Dues

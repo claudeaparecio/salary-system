@@ -15,7 +15,8 @@ export default function invoices(state = [], action) {
 
   switch (action.type) {
     case SET_INVOICES:
-      return state.concat(action.invoices);
+      action.invoices.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+      return action.invoices;
     case ADD_INVOICE:
       return state.concat(action.invoice);
     case UPDATE_INVOICE:

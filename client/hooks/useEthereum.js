@@ -17,6 +17,6 @@ export const startPayment = async ({ amount, address }) => {
       });
       return { transaction: tx, success: true, message: 'Processing payment' };
     } catch (err) {
-      return { success: true, message: err.message };
+      return { success: false, message: err.message };
     }
 };
