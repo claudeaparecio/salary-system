@@ -11,15 +11,6 @@
 ```bash
 npm install
 
-# Install MongoDB
-brew tap mongodb/brew
-brew install mongodb-community
-```
-
-Start the database
-```bash
-brew services start mongodb-community
-```
 
 #### for Development
 
