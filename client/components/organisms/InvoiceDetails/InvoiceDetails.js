@@ -5,6 +5,7 @@ import styled from "styled-components";
 import R from "ramda";
 import _ from "lodash";
 import moment from "moment";
+import logo from '../../../assets/images/swipebit-white.png'
 
 import { useReactToPrint } from "react-to-print";
 
@@ -35,7 +36,7 @@ const PaperContainer = styled.div`
 
 const LeftSection = styled.div`
   width: 30%;
-  background-color: #393d3c;
+  background-color: #0e47bb;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -71,7 +72,7 @@ const InvoiceTitleContainer2 = styled.div`
   width: 200px;
 `;
 
-const Logo = styled.div`
+const Logo = styled.img`
   width: 60%;
   color: #fefffe;
   margin-top: 50px;
@@ -110,7 +111,7 @@ const renderPdfPreview = (invoiceData) => {
     return (
       <PaperContainer>
         <LeftSection>
-          <Logo>Logo</Logo>
+          <Logo src={logo}/>
           <EmployerDetails>
             <Text size={"15px"} weight={"500"} color={"#fefffe"}>
               EMPLOYER

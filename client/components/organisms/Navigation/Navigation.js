@@ -22,6 +22,7 @@ import {
   Title,
   Image,
 } from "react-bulma-companion";
+import logo from '../../../assets/images/swipebit-white.png'
 
 import { attemptLogout } from "_thunks/auth";
 
@@ -29,9 +30,16 @@ const CustomIcon = styled(FontAwesomeIcon)`
   margin-right: 10px;
 `;
 
+const Logo = styled.img`
+  height: 40px;
+  width: 70%;
+  margin-bottom: 20px;
+`;
+
 const StyledColumn = styled(Column)`
-  background-color: #ffffff;
+  background-color: #0e47bb ;
   padding: 24px;
+  padding-top: 35px;
 `;
 
 const StyledTitle = styled(Title)`
@@ -49,6 +57,7 @@ const MenuLink = styled(Menu.Link)`
   font-size: 13px;
   padding: 6px 16px;
   border-radius: 4px;
+  color: #fff !important;
 `;
 
 const MenuItem = styled(Menu.ListItem)`
@@ -69,13 +78,9 @@ export default function Navigation({ pathname }) {
 
   const isAdmin = user.role === "admin";
   return auth ? (
-    <StyledColumn size="2">
+    <StyledColumn size="3">
       <Menu>
-        <TitleContainer to={"/home"} aria-label="main navigation">
-          <StyledTitle className="logo" size="3">
-            Salary System
-          </StyledTitle>
-        </TitleContainer>
+        <Logo src={logo}/>
         <Image />
         <Menu.List>
           <MenuItem>

@@ -4,6 +4,17 @@
 }
 
 .menu-list a.is-active {
-  background-color: #f4f3f6 !important;
-  color: #01090f;
+  background-color: #ff9400 !important;
+  color: #fff;
+  font-weight: 700;
+}
+
+a.is-active {
+  font-weight: bold; 
+}
+
+.menu-list a:hover {
+  background-color: #4f7cd9;
+  color: #fff;
+  font-weight: 700;
 }
