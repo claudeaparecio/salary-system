@@ -16,7 +16,7 @@ import numeral from "numeral";
 
 const WalletContainer = styled.div`
   display: flex;
-  align-items: flex-end;
+  align-items: center;
   justify-content: center;
 `;
 
@@ -34,6 +34,7 @@ export default function ModalQrCode({
   payUsingMetamask,
 }) {
   const [btnDisable, setBtnDisable] = useState(false);
+  const [showCopied, setShowCopied] = useState(false);
 
   const paymentConfirmed = () => {
     if (btnDisable) {
@@ -84,13 +85,14 @@ export default function ModalQrCode({
                     <div>{invoiceData?.user?.walletAddress}</div>
                     <Button
                       style={{ marginLeft: "4px" }}
-                      onClick={() => {
-                        navigator.clipboard.writeText(
-                          invoiceData?.user?.walletAddress
-                        );
+                      onClick={async() => {
+                        navigator.clipboard.writeText(invoiceData?.user?.walletAddress).then(() => {
+                          setShowCopied(true);
+                          setTimeout(() => setShowCopied(false), 1500);
+                        })
                       }}
                     >
-                      Copy
+                      {showCopied ? '✔️' : 'Copy'}
                     </Button>
                   </WalletContainer>
                 </Field>
