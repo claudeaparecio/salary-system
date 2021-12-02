@@ -31,8 +31,8 @@ const CustomIcon = styled(FontAwesomeIcon)`
 `;
 
 const Logo = styled.img`
-  height: 40px;
-  width: 70%;
+  height: 39px;
+  width: 170px;
   margin-bottom: 20px;
 `;
 
